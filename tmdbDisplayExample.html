@@ -26,6 +26,17 @@ const genres = [
 
 ];
 
+fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&page=1`)
+  .then(response => response.json())
+  .then(data => displayMovies(data.results.slice(0, 10)))
+  .catch(err => console.error(err));
+
+function fetchMoviesByGenre(genre) {
+  fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
+	.then(response => response.json())
+	.then(data => displayMovies(data.results.slice(0, 10)))
+	.catch(err => console.error(err));
+}
  
 
 genres.forEach(genre => {
