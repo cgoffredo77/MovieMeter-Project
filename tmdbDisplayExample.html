@@ -1,6 +1,19 @@
-<div id = 'container'>
-  
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Meter</title>
+</head>
+
+<style>
+
+</style>
+
+<body>
+
+    <div id='genresContainer'></div> <!-- Genre buttons will go here -->
+    <div id='container'></div> <!-- Movie images will be displayed here -->
 
 <script>
 
@@ -25,20 +38,7 @@ const genres = [
   'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
 
 ];
-
-fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&page=1`)
-  .then(response => response.json())
-  .then(data => displayMovies(data.results.slice(0, 10)))
-  .catch(err => console.error(err));
-
-function fetchMoviesByGenre(genre) {
-  fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
-	.then(response => response.json())
-	.then(data => displayMovies(data.results.slice(0, 10)))
-	.catch(err => console.error(err));
-}
  
-
 genres.forEach(genre => {
 
   const button = document.createElement('button');
@@ -53,8 +53,6 @@ genres.forEach(genre => {
 
 });
 
- 
-
 function fetchMoviesByGenre(genre) {
 
   fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
@@ -65,5 +63,45 @@ function fetchMoviesByGenre(genre) {
 
             .catch(err => console.error(err));
 
+}
+
+function getGenreId(genre) 
+{
+  const genreMap = 
+  {
+    'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35,
+    'Crime': 80, 'Documentary': 99, 'Drama': 18, 'History': 36,
+    'Mystery': 9648, 'Romance': 10749, 'Science Fiction': 878,
+    'Thriller': 53, 'Western': 37
+  };
+
+  return genreMap[genre];
+}
+
+function displayMovies(movies) 
+{
+  const container = document.getElementById('container');
+
+  container.innerHTML = ''; // Clear previous movies
+
+  movies.forEach(movie => 
+  {
+    if (movie.poster_path) 
+    {
+      const img = document.createElement('img');
+
+      img.src = `${imageBaseUrl}${movie.poster_path}`; // Set image source
+
+      img.alt = movie.title; // Set alt text
+
+      img.style.width = '200px'; // Optional: Set a width
+
+      img.style.margin = '10px'; // Optional: Add some margin
+
+      container.appendChild(img); // Append the image to the container
+    } else {
+      console.warn(`No poster available for movie: ${movie.title}`);
+    }
+  });
 }
 </script>
