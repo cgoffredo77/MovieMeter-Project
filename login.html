@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login to Movie Meter</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2 id="formTitle">Login to Movie Meter</h2>
+        <form id="authForm">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <button id="signupButton">Sign Up</button>
+    </div>
+
+    <script>
+        const signupButton = document.getElementById('signupButton');
+        const authForm = document.getElementById('authForm');
+        const formTitle = document.getElementById('formTitle');
+
+        // Function to switch to sign-up form
+        signupButton.addEventListener('click', () => {
+            // Change form to signup
+            formTitle.textContent = 'Create an Account';
+            authForm.innerHTML = `
+                <div class="form-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" name="lastName" required>
+                </div>
+                <div class="form-group">
+                    <label for="newUsername">Create a Username</label>
+                    <input type="text" id="newUsername" name="newUsername" required>
+                </div>
+                <div class="form-group">
+                    <label for="newPassword">Enter a Password</label>
+                    <input type="password" id="newPassword" name="newPassword" required>
+                </div>
+                <div class="form-group">
+                    <label for="verifyPassword">Verify Password</label>
+                    <input type="password" id="verifyPassword" name="verifyPassword" required>
+                </div>
+                <button type="button" id="createAccountButton">Create Account</button>
+                <button type="button" id="backToSignIn" style="background-color: #0b1f3b; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 3px;">Back to Sign In</button>
+            `;
+
+            // Hide the Sign Up button when in sign-up mode
+            signupButton.style.display = 'none';
+
+            // Add event listener for "Back to Sign In"
+            document.getElementById('backToSignIn').addEventListener('click', () => {
+                resetToLogin();
+            });
+        });
+
+        function resetToLogin() {
+            // Change form back to login
+            formTitle.textContent = 'Login to Movie Meter';
+            authForm.innerHTML = `
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit">Login</button>
+            `;
+
+            // Show the Sign Up button again
+            signupButton.style.display = 'block';
+        }
+
+        // Add event listener for login form submission
+        document.getElementById('authForm').addEventListener('submit', function (e) {
+            e.preventDefault(); // Prevent form submission for demonstration
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simulated login check (replace with your logic)
+            if (username === "testuser" && password === "testpass") {
+                alert('Login successful!');
+                // Redirect or perform actions on successful login
+            } else {
+                alert('Invalid username or password.');
+            }
+        });
+    </script>
+</body>
+</html>
