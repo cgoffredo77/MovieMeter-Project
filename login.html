@@ -28,6 +28,9 @@
         const authForm = document.getElementById('authForm');
         const formTitle = document.getElementById('formTitle');
 
+        const apiUrl = 'https://api.jsonbin.io/v3/b/66fdb520e41b4d34e43bf404';
+        const apiKey = '$2a$10$vrV0Eq1IE6BNuCJ3ZH1UDO0GUqSzJCyiD/kM7ahAx/dMdD0FvwjRe';
+
         // Function to switch to sign-up form
         signupButton.addEventListener('click', () => {
             // Change form to signup
@@ -63,6 +66,54 @@
             // Add event listener for "Back to Sign In"
             document.getElementById('backToSignIn').addEventListener('click', () => {
                 resetToLogin();
+            });
+
+            // Add event listener for creating an account
+            document.getElementById('createAccountButton').addEventListener('click', async () => {
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const newUsername = document.getElementById('newUsername').value;
+                const newPassword = document.getElementById('newPassword').value;
+                const verifyPassword = document.getElementById('verifyPassword').value;
+
+                if (newPassword !== verifyPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+
+                // Create a new user object**
+                const newUser = {
+                    firstName: firstName,
+                    lastName: lastName,  
+                    username: newUsername, 
+                    password: newPassword  
+                };
+
+                try {
+                // Send the new user data to JSONBin
+                const response = await fetch(apiUrl, {
+                    method: 'PUT', // Use 'POST' to create a new bin or 'PUT' to update an existing bin
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    },
+                    body: JSON.stringify(newUser)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert('Account created successfully!');
+                    console.log('Result:', result);
+                    resetToLogin();
+                } else {
+                    console.error('Error creating account:', result);
+                    alert('Error creating account. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please try again.');
+            }
+
             });
         });
 
