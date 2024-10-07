@@ -31,9 +31,7 @@
         const apiUrl = 'https://api.jsonbin.io/v3/b/66fdb520e41b4d34e43bf404';
         const apiKey = '$2a$10$vrV0Eq1IE6BNuCJ3ZH1UDO0GUqSzJCyiD/kM7ahAx/dMdD0FvwjRe';
 
-        // Function to switch to sign-up form
         signupButton.addEventListener('click', () => {
-            // Change form to signup
             formTitle.textContent = 'Create an Account';
             authForm.innerHTML = `
                 <div class="form-group">
@@ -60,15 +58,12 @@
                 <button type="button" id="backToSignIn" style="background-color: #0b1f3b; color: white; border: none; padding: 10px 20px; text-align: center; text-decoration: none; display: inline-block; font-size: 16px; margin-top: 10px; cursor: pointer; border-radius: 3px;">Back to Sign In</button>
             `;
 
-            // Hide the Sign Up button when in sign-up mode
             signupButton.style.display = 'none';
 
-            // Add event listener for "Back to Sign In"
             document.getElementById('backToSignIn').addEventListener('click', () => {
                 resetToLogin();
             });
 
-            // Add event listener for creating an account
             document.getElementById('createAccountButton').addEventListener('click', async () => {
                 const firstName = document.getElementById('firstName').value;
                 const lastName = document.getElementById('lastName').value;
@@ -81,7 +76,6 @@
                     return;
                 }
 
-                // Create a new user object**
                 const newUser = {
                     firstName: firstName,
                     lastName: lastName,  
@@ -90,35 +84,31 @@
                 };
 
                 try {
-                // Send the new user data to JSONBin
-                const response = await fetch(apiUrl, {
-                    method: 'PUT', // Use 'POST' to create a new bin or 'PUT' to update an existing bin
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': apiKey
-                    },
-                    body: JSON.stringify(newUser)
-                });
+                    const response = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': apiKey
+                        },
+                        body: JSON.stringify(newUser)
+                    });
 
-                const result = await response.json();
-                if (response.ok) {
-                    alert('Account created successfully!');
-                    console.log('Result:', result);
-                    resetToLogin();
-                } else {
-                    console.error('Error creating account:', result);
-                    alert('Error creating account. Please try again.');
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert('Account created successfully!');
+                        resetToLogin();
+                    } else {
+                        console.error('Error creating account:', result);
+                        alert('Error creating account. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Network error. Please try again.');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Network error. Please try again.');
-            }
-
             });
         });
 
         function resetToLogin() {
-            // Change form back to login
             formTitle.textContent = 'Login to Movie Meter';
             authForm.innerHTML = `
                 <div class="form-group">
@@ -131,25 +121,41 @@
                 </div>
                 <button type="submit">Login</button>
             `;
-
-            // Show the Sign Up button again
             signupButton.style.display = 'block';
         }
 
-        // Add event listener for login form submission
-        document.getElementById('authForm').addEventListener('submit', function (e) {
-            e.preventDefault(); // Prevent form submission for demonstration
+        async function handleLogin(username, password) {
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    }
+                });
+
+                const data = await response.json();
+                const storedUser = data.record;
+
+                if (storedUser && storedUser.username === username && storedUser.password === password) {
+                    alert('Login successful!');
+                    window.location.href = 'homePage.html'; // Redirect to the desired page
+                } else {
+                    alert('Invalid username or password.');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                alert('Error during login. Please try again.');
+            }
+        }
+
+        authForm.addEventListener('submit', function (e) {
+            e.preventDefault();
 
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
 
-            // Simulated login check (replace with your logic)
-            if (username === "testuser" && password === "testpass") {
-                alert('Login successful!');
-                // Redirect or perform actions on successful login
-            } else {
-                alert('Invalid username or password.');
-            }
+            handleLogin(username, password);
         });
     </script>
 </body>
