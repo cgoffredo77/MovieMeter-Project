@@ -84,29 +84,47 @@
                 };
 
                 try {
-                    const response = await fetch(apiUrl, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-Master-Key': apiKey
-                        },
-                        body: JSON.stringify(newUser)
-                    });
-
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert('Account created successfully!');
-                        resetToLogin();
-                    } else {
-                        console.error('Error creating account:', result);
-                        alert('Error creating account. Please try again.');
+                // Step 1: Get the existing data from the JSON bin
+                const getResponse = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
                     }
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Network error. Please try again.');
+                });
+
+                const data = await getResponse.json();
+
+                // Step 2: Retrieve the users array or initialize it if it's not there
+                let users = data.record.users || [];
+
+                // Step 3: Append the new user to the array
+                users.push(newUser);
+
+                // Step 4: Update the JSON bin with the new array
+                const updateResponse = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    },
+                    body: JSON.stringify({ users })  // Send back the updated users array
+                });
+
+                const result = await updateResponse.json();
+                if (updateResponse.ok) {
+                    alert('Account created successfully!');
+                    resetToLogin();
+                } else {
+                    console.error('Error creating account:', result);
+                    alert('Error creating account. Please try again.');
                 }
-            });
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Network error. Please try again.');
+            }
         });
+    });
 
         function resetToLogin() {
             formTitle.textContent = 'Login to Movie Meter';
