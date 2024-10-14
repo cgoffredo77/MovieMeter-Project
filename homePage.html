@@ -61,6 +61,7 @@ genres.forEach(genre => {
 
 });
 
+//Fetch Movies
 function fetchMoviesByGenre(genre) {
 
   fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
