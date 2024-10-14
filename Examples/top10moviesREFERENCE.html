@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Meter</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap">
+  <style>
+	h1 {
+	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+	color: rgb(85, 85, 250);
+	}
+	#container {
+	  display: flex;
+	}
+
+	#genres {
+	  width: 450px;
+	  padding: 10px;
+	  font-family: 'Roboto', sans-serif;
+	  font-weight: 300;
+	  font-size: 10pt;
+	}
+
+	#genres-title {
+	  font-size: 20px;
+	  font-weight: medium;
+	  margin-bottom: 10px;
+	}
+
+	.genre-button {
+	  width: 100px;
+	  height: 40px;
+	  margin: 5px;
+	  border: 1.5px solid black;
+	  border-radius: 20px;
+	  cursor: pointer;
+	  background-color: white;
+	  color: black;
+	  font-family: 'Roboto', sans-serif;
+	  font-weight: 300;
+	  font-size: 10pt;
+	}
+
+	.movies-container {
+	  display: flex;
+	  flex-wrap: wrap;
+	}
+
+	.movie {
+	  width: 200px;
+	  margin: 10px;
+	  font-family: 'Roboto', sans-serif;
+	  font-weight: 300;
+	  font-size: 10pt;
+	  cursor: pointer; /* Change cursor to pointer to indicate clickable */
+	}
+
+	.movie img {
+	  width: 100%;
+	  border-radius: 10px;
+	}
+
+	/* Modal styles */
+	.modal {
+	  display: none;
+	  position: fixed;
+	  z-index: 1000;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  overflow: auto;
+	  background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-content {
+	  background-color: #fefefe;
+	  margin: 15% auto;
+	  padding: 20px;
+	  border: 1px solid #888;
+	  width: 80%;
+	  max-width: 600px;
+	  border-radius: 10px;
+	}
+
+	.close {
+	  color: #aaa;
+	  float: right;
+	  font-size: 28px;
+	  font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+	  color: black;
+	  text-decoration: none;
+	  cursor: pointer;
+	}
+  </style>
+</head>
+<body>
+<h1>Movie Meter</h1>
+<div id="container">
+  <div id="genres">
+	<br><div id="genres-title">MOVIES BY GENRE<br></div>
+  </div>
+  <div id="movies" class="movies-container"></div>
+</div>
+
+<!-- Modal -->
+<div id="movieModal" class="modal">
+  <div class="modal-content">
+	<span class="close">&times;</span>
+	<h2 id="modal-title"></h2>
+	<p><strong>Genre:</strong> <span id="modal-genre"></span></p>
+	<p><strong>Rating:</strong> <span id="modal-rating"></span></p>
+	<p><strong>Overview:</strong></p>
+	<p id="modal-overview"></p>
+  </div>
+</div>
+
+<script>
+const apiKey = '0d8f53c6f0a9bdfd2bc45e9543884d5b';
+const apiUrl = 'https://api.themoviedb.org/3';
+const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+
+const genres = [
+  'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'History',
+  'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
+];
+
+const genresContainer = document.getElementById('genres');
+const moviesContainer = document.getElementById('movies');
+const modal = document.getElementById('movieModal');
+const closeModal = document.querySelector('.close');
+
+closeModal.onclick = () => {
+  modal.style.display = 'none';
+};
+
+// Create genre buttons
+genres.forEach(genre => {
+  const button = document.createElement('button');
+  button.className = 'genre-button';
+  button.textContent = genre;
+  button.addEventListener('click', () => fetchMoviesByGenre(genre));
+  genresContainer.appendChild(button);
+});
+
+// Fetch top 10 movies based on popularity
+fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=en-US&page=1`)
+  .then(response => response.json())
+  .then(data => displayMovies(data.results.slice(0, 10)))
+  .catch(err => console.error(err));
+
+function fetchMoviesByGenre(genre) {
+  fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
+	.then(response => response.json())
+	.then(data => displayMovies(data.results.slice(0, 10)))
+	.catch(err => console.error(err));
+}
+
+function displayMovies(movies) {
+  moviesContainer.innerHTML = ''; // Clear previous movies
+
+  movies.forEach(movie => {
+	const movieDiv = document.createElement('div');
+	movieDiv.className = 'movie';
+
+	const movieImage = document.createElement('img');
+	movieImage.src = `${imageBaseUrl}${movie.poster_path}`;
+	movieImage.alt = movie.title;
+
+	const movieTitle = document.createElement('p');
+	movieTitle.textContent = movie.title;
+
+	movieDiv.appendChild(movieImage);
+	movieDiv.appendChild(movieTitle);
+	moviesContainer.appendChild(movieDiv);
+
+	// Add click event to open modal
+	movieDiv.addEventListener('click', () => openModal(movie));
+  });
+}
+
+function openModal(movie) {
+  const genreNames = movie.genre_ids.map(getGenreName).join(', ');
+  
+  document.getElementById('modal-title').textContent = movie.title;
+  document.getElementById('modal-genre').textContent = genreNames;
+  document.getElementById('modal-rating').textContent = movie.adult ? 'R' : 'PG-13'; // Basic rating
+  document.getElementById('modal-overview').textContent = movie.overview;
+
+  modal.style.display = 'block';
+}
+
+function getGenreId(genre) {
+  const genreMap = {
+	'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35, 'Crime': 80,
+	'Documentary': 99, 'Drama': 18, 'History': 36, 'Mystery': 9648, 'Romance': 10749,
+	'Science Fiction': 878, 'Thriller': 53, 'Western': 37
+  };
+
+  return genreMap[genre];
+}
+
+function getGenreName(id) {
+  const genreMap = {
+	28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime',
+	99: 'Documentary', 18: 'Drama', 36: 'History', 9648: 'Mystery', 10749: 'Romance',
+	878: 'Science Fiction', 53: 'Thriller', 37: 'Western'
+  };
+
+  return genreMap[id];
+}
+</script>
+
+</body>
+</html>

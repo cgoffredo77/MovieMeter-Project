@@ -3,13 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Movie Meter</title>
+  <title>Top Movies by Genre</title>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap">
   <style>
-	h1 {
-	font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-	color: rgb(85, 85, 250);
-	}
 	#container {
 	  display: flex;
 	}
@@ -53,21 +49,78 @@
 	  font-family: 'Roboto', sans-serif;
 	  font-weight: 300;
 	  font-size: 10pt;
+	  cursor: pointer; /* Change cursor to pointer to indicate clickable */
 	}
 
 	.movie img {
 	  width: 100%;
 	  border-radius: 10px;
 	}
+
+	/* Modal styles */
+	.modal {
+	  display: none;
+	  position: fixed;
+	  z-index: 1000;
+	  left: 0;
+	  top: 0;
+	  width: 100%;
+	  height: 100%;
+	  overflow: auto;
+	  background-color: rgba(0, 0, 0, 0.5);
+	}
+
+	.modal-content {
+	  background-color: #fefefe;
+	  margin: 15% auto;
+	  padding: 20px;
+	  border: 1px solid #888;
+	  width: 80%;
+	  max-width: 600px;
+	  border-radius: 10px;
+	}
+
+	.close {
+	  color: #aaa;
+	  float: right;
+	  font-size: 28px;
+	  font-weight: bold;
+	}
+
+	.close:hover,
+	.close:focus {
+	  color: black;
+	  text-decoration: none;
+	  cursor: pointer;
+	}
+
+	.modal-img {
+	  width: 100%; /* Make the image responsive */
+	  border-radius: 10px;
+	  margin-bottom: 15px; /* Space between image and text */
+	}
   </style>
 </head>
 <body>
-<h1>Movie Meter</h1>
+
 <div id="container">
   <div id="genres">
 	<br><div id="genres-title">MOVIES BY GENRE<br></div>
   </div>
   <div id="movies" class="movies-container"></div>
+</div>
+
+<!-- Modal -->
+<div id="movieModal" class="modal">
+  <div class="modal-content">
+	<span class="close">&times;</span>
+	<img id="modal-img" class="modal-img" src="" alt="Movie Cover">
+	<h2 id="modal-title"></h2>
+	<p><strong>Genre:</strong> <span id="modal-genre"></span></p>
+	<p><strong>Rating:</strong> <span id="modal-rating"></span></p>
+	<p><strong>Overview:</strong></p>
+	<p id="modal-overview"></p>
+  </div>
 </div>
 
 <script>
@@ -82,6 +135,12 @@ const genres = [
 
 const genresContainer = document.getElementById('genres');
 const moviesContainer = document.getElementById('movies');
+const modal = document.getElementById('movieModal');
+const closeModal = document.querySelector('.close');
+
+closeModal.onclick = () => {
+  modal.style.display = 'none';
+};
 
 // Create genre buttons
 genres.forEach(genre => {
@@ -122,7 +181,36 @@ function displayMovies(movies) {
 	movieDiv.appendChild(movieImage);
 	movieDiv.appendChild(movieTitle);
 	moviesContainer.appendChild(movieDiv);
+
+	// Add click event to open modal
+	movieDiv.addEventListener('click', () => openModal(movie));
   });
+}
+
+function openModal(movie) {
+  // Fetch the full movie details to get the rating and release dates
+  fetch(`${apiUrl}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
+    .then(response => response.json())
+    .then(movieDetails => {
+      const genreNames = movieDetails.genres.map(genre => genre.name).join(', ');
+
+      // Fetch release dates to find the content rating
+      fetch(`${apiUrl}/movie/${movie.id}/release_dates?api_key=${apiKey}`)
+        .then(res => res.json())
+        .then(releaseData => {
+          const usRelease = releaseData.results.find(release => release.iso_3166_1 === 'US');
+          const contentRating = usRelease && usRelease.release_dates.length > 0 ? usRelease.release_dates[0].certification : 'N/A';
+
+          document.getElementById('modal-title').textContent = movie.title;
+          document.getElementById('modal-genre').textContent = genreNames;
+          document.getElementById('modal-rating').textContent = contentRating; // Set the content rating
+          document.getElementById('modal-overview').textContent = movieDetails.overview;
+          document.getElementById('modal-img').src = `${imageBaseUrl}${movie.backdrop_path || movie.poster_path}`; // Use backdrop or poster as cover
+
+          modal.style.display = 'block';
+        });
+    })
+    .catch(err => console.error(err));
 }
 
 function getGenreId(genre) {
@@ -138,4 +226,3 @@ function getGenreId(genre) {
 
 </body>
 </html>
-
