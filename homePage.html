@@ -4,113 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Meter</title>
+    <link rel="stylesheet" href="homePage.css"> <!-- Link to the CSS file -->
 </head>
-
-<style>
-
-</style>
-
 <body>
-
     <h1>Movie Meter</h1>
 
     <div class="topnav">
-      <a class="active" href="#home">Home</a>
-      <a href="#about">About</a>
-      <input type="text" placeholder="Search..">
+        <div>
+            <a class="active" href="#home">Home</a>
+            <a href="#about">About</a>
+            <input type="text" placeholder="Search..">
+        </div>
+        <button class="profile-button" onclick="goToProfile()">Profile</button>
     </div>
 
     <div id='genresContainer'></div> <!-- Genre buttons will go here -->
     <div id='container'></div> <!-- Movie images will be displayed here -->
 
-<script>
+    <script>
+        const apiKey = '18594e885f6876cc8b546a80669c5249';
+        const apiUrl = 'https://api.themoviedb.org/3';
+        const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+        let movieArray = [];
 
-const apiKey = '18594e885f6876cc8b546a80669c5249';
+        // Get logged-in user from localStorage
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
 
-const apiUrl = 'https://api.themoviedb.org/3';
+        function goToProfile() {
+            window.location.href = 'profile.html'; // Redirect to profile page
+        }
 
-const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+        // Create genre buttons
+        const genres = [
+            'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'History',
+            'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
+        ];
 
-let movieArray = []; // Array to hold saved movie objects
+        genres.forEach(genre => {
+            const button = document.createElement('button');
+            button.className = 'genre-button';
+            button.textContent = genre;
+            button.addEventListener('click', () => fetchMoviesByGenre(genre));
+            genresContainer.appendChild(button);
+        });
 
- 
+        // Fetch movies by genre
+        function fetchMoviesByGenre(genre) {
+            fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
+                .then(response => response.json())
+                .then(data => displayMovies(data.results.slice(0, 10)))
+                .catch(err => console.error(err));
+        }
 
-//For example, you can search by genres (**code not complete)
+        function getGenreId(genre) {
+            const genreMap = {
+                'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35,
+                'Crime': 80, 'Documentary': 99, 'Drama': 18, 'History': 36,
+                'Mystery': 9648, 'Romance': 10749, 'Science Fiction': 878,
+                'Thriller': 53, 'Western': 37
+            };
+            return genreMap[genre];
+        }
 
- 
+        function displayMovies(movies) {
+            const container = document.getElementById('container');
+            container.innerHTML = ''; // Clear previous movies
+            movies.forEach(movie => {
+                if (movie.poster_path) {
+                    const img = document.createElement('img');
+                    img.src = `${imageBaseUrl}${movie.poster_path}`; // Set image source
+                    img.alt = movie.title; // Set alt text
+                    img.style.width = '200px'; // Optional: Set a width
+                    img.style.margin = '10px'; // Optional: Add some margin
+                    container.appendChild(img); // Append the image to the container
+                } else {
+                    console.warn(`No poster available for movie: ${movie.title}`);
+                }
+            });
+        }
+    </script>
 
-const genres = [
-
-  'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'History',
-
-  'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
-
-];
- 
-genres.forEach(genre => {
-
-  const button = document.createElement('button');
-
-  button.className = 'genre-button';
-
-  button.textContent = genre;
-
-  button.addEventListener('click', () => fetchMoviesByGenre(genre));
-
-  genresContainer.appendChild(button);
-
-});
-
-//Fetch Movies
-function fetchMoviesByGenre(genre) {
-
-  fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
-
-            .then(response => response.json())
-
-            .then(data => displayMovies(data.results.slice(0, 10)))
-
-            .catch(err => console.error(err));
-
-}
-
-function getGenreId(genre) 
-{
-  const genreMap = 
-  {
-    'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35,
-    'Crime': 80, 'Documentary': 99, 'Drama': 18, 'History': 36,
-    'Mystery': 9648, 'Romance': 10749, 'Science Fiction': 878,
-    'Thriller': 53, 'Western': 37
-  };
-
-  return genreMap[genre];
-}
-
-function displayMovies(movies) 
-{
-  const container = document.getElementById('container');
-
-  container.innerHTML = ''; // Clear previous movies
-
-  movies.forEach(movie => 
-  {
-    if (movie.poster_path) 
-    {
-      const img = document.createElement('img');
-
-      img.src = `${imageBaseUrl}${movie.poster_path}`; // Set image source
-
-      img.alt = movie.title; // Set alt text
-
-      img.style.width = '200px'; // Optional: Set a width
-
-      img.style.margin = '10px'; // Optional: Add some margin
-
-      container.appendChild(img); // Append the image to the container
-    } else {
-      console.warn(`No poster available for movie: ${movie.title}`);
-    }
-  });
-}
-</script>
+</body>
+</html>

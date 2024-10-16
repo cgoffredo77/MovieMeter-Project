@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Movie Meter</title>
+    <link rel="stylesheet" href="profile.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <h1>User Profile</h1>
+    
+    <div class="topnav">
+        <div>
+            <a href="homePage.html">Home</a>
+            <a href="#about">About</a>
+        </div>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <div id="profileContainer">
+        <!-- User profile information will be displayed here -->
+        <p id="welcomeMessage"></p>
+        <h2>Your Favorite Movies</h2>
+        <div id="favoriteMovies"></div> <!-- Display favorite movies here -->
+    </div>
+
+    <script>
+        // Get logged-in user from localStorage
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+
+        // Display welcome message
+        document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.username}!`;
+
+        // Function to logout
+        function logout() {
+            localStorage.removeItem('loggedInUser'); // Remove user info from localStorage
+            window.location.href = 'login.html'; // Redirect to login page
+        }
+
+        // Function to display favorite movies (this is just a placeholder)
+        function displayFavoriteMovies() {
+            const favoriteMovies = loggedInUser.favoriteMovies || [];
+            const favoriteMoviesContainer = document.getElementById('favoriteMovies');
+            favoriteMoviesContainer.innerHTML = '';
+
+            favoriteMovies.forEach(movie => {
+                const movieDiv = document.createElement('div');
+                movieDiv.className = 'movie';
+                movieDiv.textContent = movie; // Display movie title
+                favoriteMoviesContainer.appendChild(movieDiv);
+            });
+        }
+
+        displayFavoriteMovies(); // Call the function to display favorite movies
+    </script>
+
+</body>
+</html>
