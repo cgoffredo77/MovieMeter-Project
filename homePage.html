@@ -83,6 +83,21 @@
         .favorite-button:hover {
             background-color: #45a049; /* Darker green on hover */
         }
+
+        /* Style for the video container */
+        #videoContainer {
+            margin-top: 15px; /* Space above the video */
+            position: relative; /* Allow absolute positioning */
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        #videoContainer iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -108,6 +123,7 @@
             <img id="modal-img" class="modal-img" src="" alt="Movie Cover">
             <h2 id="modal-title"></h2>
             <p id="modal-overview"></p>
+            <div id="videoContainer"></div> <!-- Video container for the trailer -->
             <button id="addToFavorites" class="favorite-button">Add to Favorites</button>
         </div>
     </div>
@@ -123,11 +139,13 @@
 
         closeModal.onclick = () => {
             modal.style.display = 'none';
+            document.getElementById('videoContainer').innerHTML = ''; // Clear video container
         };
 
         window.onclick = (event) => {
             if (event.target == modal) {
                 modal.style.display = 'none';
+                document.getElementById('videoContainer').innerHTML = ''; // Clear video container
             }
         };
 
@@ -215,50 +233,92 @@
                 .then(movieDetails => {
                     document.getElementById('modal-title').textContent = movieDetails.title;
                     document.getElementById('modal-overview').textContent = movieDetails.overview;
-                    document.getElementById('modal-img').src = `${imageBaseUrl}${movieDetails.backdrop_path || movieDetails.poster_path}`;
-                    document.getElementById('addToFavorites').onclick = () => addToFavorites(movieDetails.title);
+                    
+                    // Use backdrop path for landscape image
+                    const backdropImageUrl = `${imageBaseUrl}${movie.backdrop_path}`;
+                    document.getElementById('modal-img').src = backdropImageUrl;
                     modal.style.display = 'block';
+
+                    // Fetch trailer for the movie
+                    fetchTrailer(movie.id);
                 })
                 .catch(err => console.error(err));
         }
 
-        // Function to add movie to favorites
-        function addToFavorites(movieTitle) {
-            if (loggedInUser) {
-                loggedInUser.favoriteMovies = loggedInUser.favoriteMovies || [];
-                if (!loggedInUser.favoriteMovies.includes(movieTitle)) {
-                    loggedInUser.favoriteMovies.push(movieTitle); // Add movie to favorites
-                    localStorage.setItem('signedInUser', JSON.stringify(loggedInUser)); // Update localStorage
-                    alert(`${movieTitle} has been added to your favorites!`);
-                } else {
-                    alert(`${movieTitle} is already in your favorites.`);
-                }
-            } else {
-                alert('You need to log in to add favorites.');
-            }
+        // Fetch the movie trailer
+        function fetchTrailer(movieId) {
+            fetch(`${apiUrl}/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`)
+                .then(response => response.json())
+                .then(data => {
+                    const trailer = data.results.find(video => video.type === 'Trailer');
+                    const videoContainer = document.getElementById('videoContainer');
+                    if (trailer) {
+                        videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>`;
+                    } else {
+                        videoContainer.innerHTML = '<p>No trailer available.</p>';
+                    }
+                })
+                .catch(err => console.error(err));
         }
 
-        // Handle search on Enter key
+        // Search for movies
+        function searchMovies() {
+            const query = document.getElementById('search-input').value;
+            fetch(`${apiUrl}/search/movie?api_key=${apiKey}&query=${query}&language=en-US`)
+                .then(response => response.json())
+                .then(data => displayMovies(data.results))
+                .catch(err => console.error(err));
+        }
+
+        // Handle search input key press
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
                 searchMovies();
             }
         }
 
-        // Search for movies
-        function searchMovies() {
-            const query = document.getElementById('search-input').value.trim();
-            if (query) {
-                fetch(`${apiUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
-                    .then(response => response.json())
-                    .then(data => displayMovies(data.results.slice(0, 10))) // Display top 10 search results
-                    .catch(err => console.error(err));
+        // Add to favorites
+        document.getElementById('addToFavorites').addEventListener('click', () => {
+            const movieTitle = document.getElementById('modal-title').textContent;
+            const movieGenre = getMovieGenre(movieTitle); // This function should fetch the genre based on title
+            if (loggedInUser) {
+                addToFavorites(loggedInUser.username, movieTitle, movieGenre);
+                alert(`${movieTitle} added to favorites!`);
             } else {
-                alert('Please enter a movie title to search.');
+                alert('Please log in to add to favorites.');
             }
+        });
+
+        // Add to favorites function
+        function addToFavorites(username, title, genre) {
+            const favoriteData = {
+                username: username,
+                title: title,
+                genre: genre
+            };
+            fetch('https://api.jsonbin.io/v3/bins/66fb674cacd3cb34a88f2630', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': '$2b$10$WQ/67I/4fwjHLpqIBmVbm.k/g20X/4PR4EGxAxWIs.LudT/c/L.2i' // Replace with your actual master key
+                },
+                body: JSON.stringify(favoriteData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Favorite added:', data);
+            })
+            .catch(err => console.error('Error adding favorite:', err));
         }
 
-        loadHome(); // Load home page content on startup
+        // Function to get movie genre based on the title (you'll need to implement this logic)
+        function getMovieGenre(title) {
+            // This function needs to fetch or retrieve the genre based on the title
+            // You could search the movie array or call an API if genre is not stored
+            return 'Unknown Genre'; // Placeholder for now
+        }
+
+        loadHome(); // Initial load
     </script>
 </body>
 </html>
