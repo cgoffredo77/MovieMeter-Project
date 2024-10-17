@@ -5,15 +5,95 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Meter</title>
     <link rel="stylesheet" href="homePage.css"> <!-- Link to the CSS file -->
+    <style>
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal-img {
+            width: 100%; /* Make the image responsive */
+            border-radius: 10px;
+            margin-bottom: 15px; /* Space between image and text */
+        }
+
+        /* New CSS for movie grid layout */
+        #container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); /* 5 columns */
+            gap: 15px; /* Space between grid items */
+            margin: 20px; /* Margin around the grid */
+            max-height: 70vh; /* Limit max height to fit in the view */
+            overflow-y: auto; /* Allow vertical scrolling */
+            padding-right: 10px; /* Add some padding to the right */
+        }
+
+        #container img {
+            width: 100%; /* Make images fill their grid cells */
+            height: auto; /* Let height adjust based on width */
+            aspect-ratio: 2/3; /* Maintain aspect ratio (width:height) */
+            object-fit: cover; /* Ensure image covers the entire grid cell */
+            border-radius: 10px; /* Optional: rounding corners */
+            cursor: pointer; /* Change cursor to indicate clickable images */
+        }
+
+        /* Add styles for the favorite button */
+        .favorite-button {
+            background-color: #4CAF50; /* Green background */
+            color: white; /* White text */
+            border: none;
+            border-radius: 5px; /* Rounded corners */
+            padding: 10px; /* Padding for the button */
+            cursor: pointer; /* Pointer cursor */
+            margin-top: 10px; /* Space above the button */
+        }
+
+        .favorite-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+        }
+    </style>
 </head>
 <body>
     <h1>Movie Meter</h1>
 
     <div class="topnav">
         <div>
-            <a class="active" href="#home">Home</a>
+            <a id="home-button" class="active" href="#home" onclick="loadHome()">Home</a>
             <a href="#about">About</a>
-            <input type="text" placeholder="Search..">
+            <input id="search-input" type="text" placeholder="Search for movies..." onkeypress="handleKeyPress(event)">
+            <button onclick="searchMovies()">Search</button> <!-- Add a search button -->
         </div>
         <button class="profile-button" onclick="goToProfile()">Profile</button>
     </div>
@@ -21,14 +101,38 @@
     <div id='genresContainer'></div> <!-- Genre buttons will go here -->
     <div id='container'></div> <!-- Movie images will be displayed here -->
 
+    <!-- Modal -->
+    <div id="movieModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-img" class="modal-img" src="" alt="Movie Cover">
+            <h2 id="modal-title"></h2>
+            <p id="modal-overview"></p>
+            <button id="addToFavorites" class="favorite-button">Add to Favorites</button>
+        </div>
+    </div>
+
     <script>
         const apiKey = '18594e885f6876cc8b546a80669c5249';
         const apiUrl = 'https://api.themoviedb.org/3';
         const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
         let movieArray = [];
 
+        const modal = document.getElementById('movieModal');
+        const closeModal = document.querySelector('.close');
+
+        closeModal.onclick = () => {
+            modal.style.display = 'none';
+        };
+
+        window.onclick = (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        };
+
         // Get logged-in user from localStorage
-        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
         function goToProfile() {
             window.location.href = 'profile.html'; // Redirect to profile page
@@ -40,13 +144,32 @@
             'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
         ];
 
-        genres.forEach(genre => {
-            const button = document.createElement('button');
-            button.className = 'genre-button';
-            button.textContent = genre;
-            button.addEventListener('click', () => fetchMoviesByGenre(genre));
-            genresContainer.appendChild(button);
-        });
+        // Load home page with initial content
+        function loadHome() {
+            displayGenres(); // Display genre buttons
+            fetchTopMovies(); // Fetch and display top movies
+            document.getElementById('search-input').value = ''; // Clear the search input
+        }
+
+        function displayGenres() {
+            const genresContainer = document.getElementById('genresContainer');
+            genresContainer.innerHTML = ''; // Clear existing genre buttons
+            genres.forEach(genre => {
+                const button = document.createElement('button');
+                button.className = 'genre-button';
+                button.textContent = genre;
+                button.addEventListener('click', () => fetchMoviesByGenre(genre));
+                genresContainer.appendChild(button);
+            });
+        }
+
+        // Fetch top movies (optional: define a specific endpoint for top movies)
+        function fetchTopMovies() {
+            fetch(`${apiUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=1`)
+                .then(response => response.json())
+                .then(data => displayMovies(data.results.slice(0, 10))) // Show top 10 movies
+                .catch(err => console.error(err));
+        }
 
         // Fetch movies by genre
         function fetchMoviesByGenre(genre) {
@@ -66,6 +189,7 @@
             return genreMap[genre];
         }
 
+        // Display movies
         function displayMovies(movies) {
             const container = document.getElementById('container');
             container.innerHTML = ''; // Clear previous movies
@@ -74,15 +198,67 @@
                     const img = document.createElement('img');
                     img.src = `${imageBaseUrl}${movie.poster_path}`; // Set image source
                     img.alt = movie.title; // Set alt text
-                    img.style.width = '200px'; // Optional: Set a width
-                    img.style.margin = '10px'; // Optional: Add some margin
                     container.appendChild(img); // Append the image to the container
+
+                    // Add click event to open modal
+                    img.addEventListener('click', () => openModal(movie));
                 } else {
                     console.warn(`No poster available for movie: ${movie.title}`);
                 }
             });
         }
-    </script>
 
+        // Open modal with movie details
+        function openModal(movie) {
+            fetch(`${apiUrl}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
+                .then(response => response.json())
+                .then(movieDetails => {
+                    document.getElementById('modal-title').textContent = movieDetails.title;
+                    document.getElementById('modal-overview').textContent = movieDetails.overview;
+                    document.getElementById('modal-img').src = `${imageBaseUrl}${movieDetails.backdrop_path || movieDetails.poster_path}`;
+                    document.getElementById('addToFavorites').onclick = () => addToFavorites(movieDetails.title);
+                    modal.style.display = 'block';
+                })
+                .catch(err => console.error(err));
+        }
+
+        // Function to add movie to favorites
+        function addToFavorites(movieTitle) {
+            if (loggedInUser) {
+                loggedInUser.favoriteMovies = loggedInUser.favoriteMovies || [];
+                if (!loggedInUser.favoriteMovies.includes(movieTitle)) {
+                    loggedInUser.favoriteMovies.push(movieTitle); // Add movie to favorites
+                    localStorage.setItem('signedInUser', JSON.stringify(loggedInUser)); // Update localStorage
+                    alert(`${movieTitle} has been added to your favorites!`);
+                } else {
+                    alert(`${movieTitle} is already in your favorites.`);
+                }
+            } else {
+                alert('You need to log in to add favorites.');
+            }
+        }
+
+        // Handle search on Enter key
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                searchMovies();
+            }
+        }
+
+        // Search for movies
+        function searchMovies() {
+            const query = document.getElementById('search-input').value.trim();
+            if (query) {
+                fetch(`${apiUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => displayMovies(data.results.slice(0, 10))) // Display top 10 search results
+                    .catch(err => console.error(err));
+            } else {
+                alert('Please enter a movie title to search.');
+            }
+        }
+
+        loadHome(); // Load home page content on startup
+    </script>
 </body>
 </html>

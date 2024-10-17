@@ -9,7 +9,11 @@ body {
 h1 {
     text-align: center;
     margin-top: 20px;
-    color: #333;
+    color: #fff; /* Change to white or another color for contrast */
+    padding: 20px; /* Add padding for better spacing */
+    background: linear-gradient(to right, #ff7e5f, #feb47b); /* Gradient background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
 }
 
 .topnav {
