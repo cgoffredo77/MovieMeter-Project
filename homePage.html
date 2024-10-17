@@ -6,7 +6,51 @@
     <title>Movie Meter</title>
     <link rel="stylesheet" href="homePage.css"> <!-- Link to the CSS file -->
     <style>
-        /* Modal Styles */
+        /* Import Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1c1c1c; /* Darker background */
+            color: #e0e0e0; /* Light grey text for contrast */
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #ffcc00; /* Bright yellow text for contrast */
+            font-family: 'Montserrat', sans-serif; /* Unique font for the heading */
+            font-size: 2.5em; /* Increased font size for prominence */
+            padding: 20px; /* Add padding for better spacing */
+            background-color: #002147; /* Dark navy blue background */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
+        }
+
+        .topnav {
+            display: flex;
+            justify-content: space-between;
+            background-color: #333;
+            padding: 14px 16px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .topnav a {
+            color: #ffcc00; /* Light color for links */
+            padding: 14px 16px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s;
+            font-weight: 500; /* Medium weight for better emphasis */
+        }
+
+        .topnav a:hover {
+            background-color: #575757;
+            color: #fff; /* Change color on hover */
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -16,12 +60,12 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.7); /* Darker modal background */
         }
 
         .modal-content {
-            background-color: #fff;
-            margin: 15% auto;
+            background-color: #222; /* Darker modal content */
+            margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
             width: 80%;
@@ -30,7 +74,7 @@
         }
 
         .close {
-            color: #aaa;
+            color: #ffcc00; /* Bright yellow close button */
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -38,65 +82,84 @@
 
         .close:hover,
         .close:focus {
-            color: black;
+            color: white; /* Change close button color on hover */
             text-decoration: none;
             cursor: pointer;
         }
 
         .modal-img {
-            width: 100%; /* Make the image responsive */
+            width: 100%; 
             border-radius: 10px;
-            margin-bottom: 15px; /* Space between image and text */
+            margin-bottom: 15px; 
         }
 
-        /* New CSS for movie grid layout */
         #container {
             display: grid;
-            grid-template-columns: repeat(5, 1fr); /* 5 columns */
-            gap: 15px; /* Space between grid items */
-            margin: 20px; /* Margin around the grid */
-            max-height: 70vh; /* Limit max height to fit in the view */
-            overflow-y: auto; /* Allow vertical scrolling */
-            padding-right: 10px; /* Add some padding to the right */
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px; 
+            margin: 20px;
+            max-height: 70vh;
+            overflow-y: auto; 
+            padding-right: 10px; 
         }
 
         #container img {
-            width: 100%; /* Make images fill their grid cells */
-            height: auto; /* Let height adjust based on width */
-            aspect-ratio: 2/3; /* Maintain aspect ratio (width:height) */
-            object-fit: cover; /* Ensure image covers the entire grid cell */
-            border-radius: 10px; /* Optional: rounding corners */
-            cursor: pointer; /* Change cursor to indicate clickable images */
+            width: 100%; 
+            height: auto; 
+            aspect-ratio: 2/3; 
+            object-fit: cover; 
+            border-radius: 10px;
+            cursor: pointer;
         }
 
-        /* Add styles for the favorite button */
         .favorite-button {
             background-color: #4CAF50; /* Green background */
-            color: white; /* White text */
+            color: white;
             border: none;
-            border-radius: 5px; /* Rounded corners */
-            padding: 10px; /* Padding for the button */
-            cursor: pointer; /* Pointer cursor */
-            margin-top: 10px; /* Space above the button */
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-weight: 500; /* Medium weight for emphasis */
         }
 
         .favorite-button:hover {
-            background-color: #45a049; /* Darker green on hover */
+            background-color: #45a049; 
         }
 
-        /* Style for the video container */
-        #videoContainer {
-            margin-top: 15px; /* Space above the video */
-            position: relative; /* Allow absolute positioning */
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
-        }
-
-        #videoContainer iframe {
-            position: absolute;
-            top: 0;
+        #trailerModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+        #trailerModalContent {
+            position: relative;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            border-radius: 10px;
+            background-color: #222; /* Darker background for trailer modal */
+        }
+
+        #trailerModal iframe {
+            width: 100%;
+            height: 450px;
+            border: none; 
+            border-radius: 10px;
+        }
+
+        .modal-genre {
+            font-size: 0.9em; /* Smaller font size */
+            color: #ffcc00; /* Bright yellow color for contrast */
+            margin: 5px 0; /* Spacing above and below the genre text */
         }
     </style>
 </head>
@@ -108,23 +171,30 @@
             <a id="home-button" class="active" href="#home" onclick="loadHome()">Home</a>
             <a href="#about">About</a>
             <input id="search-input" type="text" placeholder="Search for movies..." onkeypress="handleKeyPress(event)">
-            <button onclick="searchMovies()">Search</button> <!-- Add a search button -->
+            <button onclick="searchMovies()">Search</button> 
         </div>
         <button class="profile-button" onclick="goToProfile()">Profile</button>
     </div>
 
-    <div id='genresContainer'></div> <!-- Genre buttons will go here -->
-    <div id='container'></div> <!-- Movie images will be displayed here -->
+    <div id='genresContainer'></div> 
+    <div id='container'></div> 
 
-    <!-- Modal -->
     <div id="movieModal" class="modal">
         <div class="modal-content">
             <span class="close">&times;</span>
             <img id="modal-img" class="modal-img" src="" alt="Movie Cover">
             <h2 id="modal-title"></h2>
+            <p id="modal-genre" class="modal-genre"></p> <!-- Genre paragraph -->
             <p id="modal-overview"></p>
-            <div id="videoContainer"></div> <!-- Video container for the trailer -->
             <button id="addToFavorites" class="favorite-button">Add to Favorites</button>
+            <button id="playTrailer" class="favorite-button">Play Trailer</button>
+        </div>
+    </div>
+
+    <div id="trailerModal" class="modal">
+        <div id="trailerModalContent">
+            <span class="close" onclick="closeTrailerModal()">&times;</span>
+            <iframe id="trailer-video" src="" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -139,39 +209,35 @@
 
         closeModal.onclick = () => {
             modal.style.display = 'none';
-            document.getElementById('videoContainer').innerHTML = ''; // Clear video container
         };
 
         window.onclick = (event) => {
-            if (event.target == modal) {
+            if (event.target == modal || event.target == trailerModal) {
                 modal.style.display = 'none';
-                document.getElementById('videoContainer').innerHTML = ''; // Clear video container
+                closeTrailerModal();
             }
         };
 
-        // Get logged-in user from localStorage
         const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
         function goToProfile() {
-            window.location.href = 'profile.html'; // Redirect to profile page
+            window.location.href = 'profile.html';
         }
 
-        // Create genre buttons
         const genres = [
             'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 'Documentary', 'Drama', 'History',
             'Mystery', 'Romance', 'Science Fiction', 'Thriller', 'Western'
         ];
 
-        // Load home page with initial content
         function loadHome() {
-            displayGenres(); // Display genre buttons
-            fetchTopMovies(); // Fetch and display top movies
-            document.getElementById('search-input').value = ''; // Clear the search input
+            displayGenres(); 
+            fetchTopMovies();
+            document.getElementById('search-input').value = '';
         }
 
         function displayGenres() {
             const genresContainer = document.getElementById('genresContainer');
-            genresContainer.innerHTML = ''; // Clear existing genre buttons
+            genresContainer.innerHTML = '';
             genres.forEach(genre => {
                 const button = document.createElement('button');
                 button.className = 'genre-button';
@@ -181,144 +247,104 @@
             });
         }
 
-        // Fetch top movies (optional: define a specific endpoint for top movies)
         function fetchTopMovies() {
             fetch(`${apiUrl}/movie/popular?api_key=${apiKey}&language=en-US&page=1`)
-                .then(response => response.json())
-                .then(data => displayMovies(data.results.slice(0, 10))) // Show top 10 movies
-                .catch(err => console.error(err));
-        }
-
-        // Fetch movies by genre
-        function fetchMoviesByGenre(genre) {
-            fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
                 .then(response => response.json())
                 .then(data => displayMovies(data.results.slice(0, 10)))
                 .catch(err => console.error(err));
         }
 
-        function getGenreId(genre) {
-            const genreMap = {
-                'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35,
-                'Crime': 80, 'Documentary': 99, 'Drama': 18, 'History': 36,
-                'Mystery': 9648, 'Romance': 10749, 'Science Fiction': 878,
-                'Thriller': 53, 'Western': 37
-            };
-            return genreMap[genre];
-        }
-
-        // Display movies
-        function displayMovies(movies) {
-            const container = document.getElementById('container');
-            container.innerHTML = ''; // Clear previous movies
-            movies.forEach(movie => {
-                if (movie.poster_path) {
-                    const img = document.createElement('img');
-                    img.src = `${imageBaseUrl}${movie.poster_path}`; // Set image source
-                    img.alt = movie.title; // Set alt text
-                    container.appendChild(img); // Append the image to the container
-
-                    // Add click event to open modal
-                    img.addEventListener('click', () => openModal(movie));
-                } else {
-                    console.warn(`No poster available for movie: ${movie.title}`);
-                }
-            });
-        }
-
-        // Open modal with movie details
-        function openModal(movie) {
-            fetch(`${apiUrl}/movie/${movie.id}?api_key=${apiKey}&language=en-US`)
-                .then(response => response.json())
-                .then(movieDetails => {
-                    document.getElementById('modal-title').textContent = movieDetails.title;
-                    document.getElementById('modal-overview').textContent = movieDetails.overview;
-                    
-                    // Use backdrop path for landscape image
-                    const backdropImageUrl = `${imageBaseUrl}${movie.backdrop_path}`;
-                    document.getElementById('modal-img').src = backdropImageUrl;
-                    modal.style.display = 'block';
-
-                    // Fetch trailer for the movie
-                    fetchTrailer(movie.id);
-                })
-                .catch(err => console.error(err));
-        }
-
-        // Fetch the movie trailer
-        function fetchTrailer(movieId) {
-            fetch(`${apiUrl}/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`)
-                .then(response => response.json())
-                .then(data => {
-                    const trailer = data.results.find(video => video.type === 'Trailer');
-                    const videoContainer = document.getElementById('videoContainer');
-                    if (trailer) {
-                        videoContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>`;
-                    } else {
-                        videoContainer.innerHTML = '<p>No trailer available.</p>';
-                    }
-                })
-                .catch(err => console.error(err));
-        }
-
-        // Search for movies
-        function searchMovies() {
-            const query = document.getElementById('search-input').value;
-            fetch(`${apiUrl}/search/movie?api_key=${apiKey}&query=${query}&language=en-US`)
+        function fetchMoviesByGenre(genre) {
+            fetch(`${apiUrl}/discover/movie?api_key=${apiKey}&with_genres=${getGenreId(genre)}&sort_by=popularity.desc&language=en-US&page=1`)
                 .then(response => response.json())
                 .then(data => displayMovies(data.results))
                 .catch(err => console.error(err));
         }
 
-        // Handle search input key press
+        function getGenreId(genre) {
+            const genreMap = {
+                'Action': 28, 'Adventure': 12, 'Animation': 16, 'Comedy': 35, 'Crime': 80,
+                'Documentary': 99, 'Drama': 18, 'History': 36, 'Mystery': 9648, 'Romance': 10749,
+                'Science Fiction': 878, 'Thriller': 53, 'Western': 37
+            };
+            return genreMap[genre];
+        }
+
+        function displayMovies(movies) {
+            const container = document.getElementById('container');
+            container.innerHTML = ''; 
+            movieArray = movies;
+            movies.forEach(movie => {
+                const movieElement = document.createElement('img');
+                movieElement.src = imageBaseUrl + movie.poster_path; 
+                movieElement.alt = movie.title; 
+                movieElement.onclick = () => openMovieModal(movie);
+                container.appendChild(movieElement);
+            });
+        }
+
+        function openMovieModal(movie) {
+            document.getElementById('modal-title').textContent = movie.title;
+            document.getElementById('modal-genre').textContent = `Genre(s): ${getMovieGenres(movie)}`;
+            document.getElementById('modal-overview').textContent = movie.overview;
+            document.getElementById('modal-img').src = imageBaseUrl + movie.backdrop_path;
+            modal.style.display = 'block';
+            document.getElementById('addToFavorites').onclick = () => addToFavorites(movie);
+            document.getElementById('playTrailer').onclick = () => openTrailerModal(movie.id);
+        }
+
+        function getMovieGenres(movie) {
+            return movie.genre_ids.map(genreId => {
+                const genreMap = {
+                    28: 'Action', 12: 'Adventure', 16: 'Animation', 35: 'Comedy', 80: 'Crime',
+                    99: 'Documentary', 18: 'Drama', 36: 'History', 9648: 'Mystery', 10749: 'Romance',
+                    878: 'Science Fiction', 53: 'Thriller', 37: 'Western'
+                };
+                return genreMap[genreId];
+            }).join(', '); // Join multiple genres with a comma
+        }
+
+        function closeTrailerModal() {
+            const trailerModal = document.getElementById('trailerModal');
+            trailerModal.style.display = 'none';
+            document.getElementById('trailer-video').src = ''; // Stop the video
+        }
+
+        function openTrailerModal(movieId) {
+            fetch(`${apiUrl}/movie/${movieId}/videos?api_key=${apiKey}&language=en-US`)
+                .then(response => response.json())
+                .then(data => {
+                    const trailer = data.results.find(video => video.type === 'Trailer');
+                    if (trailer) {
+                        document.getElementById('trailer-video').src = `https://www.youtube.com/embed/${trailer.key}`;
+                        document.getElementById('trailerModal').style.display = 'block';
+                    } else {
+                        alert('No trailer available for this movie.');
+                    }
+                })
+                .catch(err => console.error(err));
+        }
+
+        function addToFavorites(movie) {
+            // Implement the add to favorites logic here
+            alert(`${movie.title} added to favorites!`);
+        }
+
+        function searchMovies() {
+            const query = document.getElementById('search-input').value;
+            fetch(`${apiUrl}/search/movie?api_key=${apiKey}&query=${query}`)
+                .then(response => response.json())
+                .then(data => displayMovies(data.results))
+                .catch(err => console.error(err));
+        }
+
         function handleKeyPress(event) {
             if (event.key === 'Enter') {
                 searchMovies();
             }
         }
 
-        // Add to favorites
-        document.getElementById('addToFavorites').addEventListener('click', () => {
-            const movieTitle = document.getElementById('modal-title').textContent;
-            const movieGenre = getMovieGenre(movieTitle); // This function should fetch the genre based on title
-            if (loggedInUser) {
-                addToFavorites(loggedInUser.username, movieTitle, movieGenre);
-                alert(`${movieTitle} added to favorites!`);
-            } else {
-                alert('Please log in to add to favorites.');
-            }
-        });
-
-        // Add to favorites function
-        function addToFavorites(username, title, genre) {
-            const favoriteData = {
-                username: username,
-                title: title,
-                genre: genre
-            };
-            fetch('https://api.jsonbin.io/v3/bins/66fb674cacd3cb34a88f2630', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': '$2b$10$WQ/67I/4fwjHLpqIBmVbm.k/g20X/4PR4EGxAxWIs.LudT/c/L.2i' // Replace with your actual master key
-                },
-                body: JSON.stringify(favoriteData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Favorite added:', data);
-            })
-            .catch(err => console.error('Error adding favorite:', err));
-        }
-
-        // Function to get movie genre based on the title (you'll need to implement this logic)
-        function getMovieGenre(title) {
-            // This function needs to fetch or retrieve the genre based on the title
-            // You could search the movie array or call an API if genre is not stored
-            return 'Unknown Genre'; // Placeholder for now
-        }
-
-        loadHome(); // Initial load
+        loadHome(); // Load home page on initial load
     </script>
 </body>
 </html>
