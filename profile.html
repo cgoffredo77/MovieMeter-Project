@@ -45,16 +45,30 @@
             window.location.href = 'login.html'; // Redirect to login page
         }
 
-        // Function to display favorite movies (this is just a placeholder)
+        // Function to display favorite movies
         function displayFavoriteMovies() {
-            const favoriteMovies = loggedInUser.favoriteMovies || [];
+            const favoriteMovies = loggedInUser.movies || []; // Retrieve movies array
             const favoriteMoviesContainer = document.getElementById('favoriteMovies');
             favoriteMoviesContainer.innerHTML = '';
 
             favoriteMovies.forEach(movie => {
                 const movieDiv = document.createElement('div');
                 movieDiv.className = 'movie';
-                movieDiv.textContent = movie; // Display movie title
+                
+                // Create an image element for the movie poster
+                const movieImage = document.createElement('img');
+                movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Use the image URL
+                movieImage.alt = movie.title; // Set alt text
+                
+                // Create a title element for the movie
+                const movieTitle = document.createElement('h3');
+                movieTitle.textContent = movie.title; // Display movie title
+                
+                // Append image and title to the movieDiv
+                movieDiv.appendChild(movieImage);
+                movieDiv.appendChild(movieTitle);
+                
+                // Append movieDiv to the container
                 favoriteMoviesContainer.appendChild(movieDiv);
             });
         }
