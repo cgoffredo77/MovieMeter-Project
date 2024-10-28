@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Movie Meter</title>
+    <link rel="stylesheet" href="profile.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <h1>User Profile</h1>
+    
+    <div class="topnav">
+        <div>
+            <a href="homePage.html">Home</a>
+            <a href="#about">About</a>
+        </div>
+        <button class="logout-button" onclick="logout()">Logout</button>
+    </div>
+
+    <div id="profileContainer">
+        <!-- User profile information will be displayed here -->
+        <p id="welcomeMessage"></p> <!-- Welcome message will be displayed here -->
+        <h2>Your Favorite Movies</h2>
+        <div id="favoriteMovies"></div> <!-- Display favorite movies here -->
+    </div>
+
+    <script>
+        // Get logged-in user from localStorage
+        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser')); // Ensure we're using the right key
+
+        // Check if the user is logged in
+        if (loggedInUser) {
+            // Display welcome message
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.firstName}!`; // Update to firstName
+
+            // Call function to display favorite movies
+            displayFavoriteMovies(); // Call the function to display favorite movies
+        } else {
+            document.getElementById('welcomeMessage').textContent = "Welcome! Please log in."; // Message if not logged in
+        }
+
+        // Function to logout
+        function logout() {
+            localStorage.removeItem('signedInUser'); // Remove user info from localStorage
+            window.location.href = 'login.html'; // Redirect to login page
+        }
+
+        // Function to display favorite movies
+        function displayFavoriteMovies() {
+            const favoriteMovies = loggedInUser.movies || []; // Retrieve movies array
+            const favoriteMoviesContainer = document.getElementById('favoriteMovies');
+            favoriteMoviesContainer.innerHTML = '';
+
+            favoriteMovies.forEach(movie => {
+                const movieDiv = document.createElement('div');
+                movieDiv.className = 'movie';
+                
+                // Create an image element for the movie poster
+                const movieImage = document.createElement('img');
+                movieImage.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // Use the image URL
+                movieImage.alt = movie.title; // Set alt text
+                
+                // Create a title element for the movie
+                const movieTitle = document.createElement('h3');
+                movieTitle.textContent = movie.title; // Display movie title
+                
+                // Append image and title to the movieDiv
+                movieDiv.appendChild(movieImage);
+                movieDiv.appendChild(movieTitle);
+                
+                // Append movieDiv to the container
+                favoriteMoviesContainer.appendChild(movieDiv);
+            });
+        }
+    </script>
+
+</body>
+</html>
