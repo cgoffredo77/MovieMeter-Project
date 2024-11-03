@@ -325,65 +325,61 @@
                 .catch(err => console.error(err));
         }
 
-    function addToFavorites(movie) {
+        function addToFavorites(movie) {
+            if (!loggedInUser) {
+                alert("You must be logged in to add favorites!");
+                return;
+            }
 
-        console.log("Add to Favorites clicked"); // Add this line to check if the function is called.
+            // Fetch current users from JSON Bin
+            fetch('https://api.jsonbin.io/v3/b/67056e6aacd3cb34a89381d3', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m' // Replace with your master key
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                const users = data.record.users;
 
-        // Retrieve the currently logged-in user from localStorage
-        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
+                // Find the user by username
+                const currentUser = users.find(user => user.username === loggedInUser.username);
 
-        if (!loggedInUser.movies) {
-        loggedInUser.movies = []; // Initialize movies array if it doesn't exist
-        }
+                if (currentUser) {
+                    // Add the movie to the user's movies array
+                    currentUser.movies.push({
+                        id: movie.id,
+                        title: movie.title,
+                        poster: movie.poster_path ? imageBaseUrl + movie.poster_path : null,
+                        rating: movie.rating,
+                        overview: movie.overview
+                    });
 
-        if (!loggedInUser) {
-            alert('Please log in to add movies to your watchlist.');
-            return;
-        }
-
-        // Check if the movie is already in the user's watchlist
-        const movieExists = loggedInUser.movies.some(m => m.id === movie.id);
-        if (movieExists) {
-            alert(`${movie.title} is already in your watchlist!`);
-            return;
-        }
-
-        // Add the movie to the user's movie list in localStorage
-        loggedInUser.movies.push(movie);
-        localStorage.setItem('signedInUser', JSON.stringify(loggedInUser)); // Update local storage
-
-        alert(`${movie.title} has been added to your watchlist!`);
-        syncFavoritesWithJsonBin(loggedInUser);
+                    // Update the JSON Bin with the new user data
+                    updateUserMovies(data.record);
+                    
+                } else {
+                    console.error("User not found!");
+                }
+            })
+            .catch(err => console.error("Error fetching users:", err));
 }
 
-function syncFavoritesWithJsonBin() {
-    const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
-
-    if (!loggedInUser) {
-        return;
-    }
-
-    const jsonBinUrl = 'https://api.jsonbin.io/v3/b/67056e6aacd3cb34a89381d3';
-    const jsonBinApiKey = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
-
-    fetch(jsonBinUrl, {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-Master-Key': jsonBinApiKey
-        },
-        body: JSON.stringify({ user: loggedInUser })
-    })
-    .then(response => {
-        if (response.ok) {
-            console.log(`Favorites for ${loggedInUser.firstName} successfully synced.`);
-        } else {
-            console.error('Failed to sync favorites with JSON Bin.');
-        }
-    })
-    .catch(err => {
-        console.error('Error syncing favorites:', err);
-    });
+        function updateUserMovies(updatedData) {
+            fetch('https://api.jsonbin.io/v3/b/67056e6aacd3cb34a89381d3', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m' // Replace with your master key
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("User movies updated successfully:", data);
+            })
+            .catch(err => console.error("Error updating user movies:", err));
 }
 
         function searchMovies() {
@@ -402,7 +398,7 @@ function syncFavoritesWithJsonBin() {
 
         loadHome(); // Load home page on initial load
 
-        setInterval(syncFavoritesWithJsonBin(), 5000);
+        setInterval(syncFavoritesWithJsonBin(movieArray), 5000);
     </script>
 </body>
 </html>
