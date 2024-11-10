@@ -26,6 +26,27 @@
 
     <script>
 
+        function createStarRating(rating) {
+            const starContainer = document.createElement("div");
+            starContainer.classList.add("star-rating");
+
+            // Create 5 stars
+            for (let i = 1; i <= 5; i++) {
+                const star = document.createElement("span");
+                star.classList.add("star");
+
+                // Fill star if the current rating is equal or higher
+                if (i <= rating) {
+                    star.textContent = "★"; // Filled star (use Unicode star)
+                    star.classList.add("filled");
+                } else {
+                    star.textContent = "☆"; // Empty star
+                }
+                starContainer.appendChild(star);
+            }
+            return starContainer;
+        }
+
         const BIN_ID = '67056e6aacd3cb34a89381d3'; // Replace with your actual Bin ID
         const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m'; // Replace with your actual Master Key if required
 
@@ -88,9 +109,8 @@ function displayFavoriteMovies() {
                 movieTitle.textContent = movie.title;
                 movieContainer.appendChild(movieTitle);
 
-                const movieRating = document.createElement('h2')
-                movieRating.textContent = movie.rating;
-                movieContainer.appendChild(movieRating);
+                const starRating = createStarRating(movie.rating);
+                movieContainer.appendChild(starRating);
 
                 // Create a paragraph element for the movie overview
                 const movieOverview = document.createElement('p');

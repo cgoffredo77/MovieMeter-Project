@@ -350,6 +350,26 @@
 
                 // Find the user by username
                 const currentUser = users.find(user => user.username === loggedInUser.username);
+                
+                const movieExists = currentUser.movies.some(favMovie => favMovie.id === movie.id);
+
+                if (movieExists) {
+                    alert("This movie is already in your favorites!");
+                    return;
+                }
+
+                // Prompt user for a custom rating (1-5)
+                let userRating = prompt("Rate this movie from 1 to 5 stars:");
+
+                // Validate that rating is a number between 1 and 5
+                userRating = parseInt(userRating);
+                if (isNaN(userRating) || userRating < 1 || userRating > 5) {
+                    alert("Please enter a valid rating between 1 and 5.");
+                    return;
+                }
+
+                // Notify the user that the movie was added to favorites
+                alert(`${movie.title} was added to your favorites with a rating of ${userRating} stars!`);
 
                 if (currentUser) {
                     // Add the movie to the user's movies array
@@ -357,7 +377,7 @@
                         id: movie.id,
                         title: movie.title,
                         poster: movie.poster_path ? imageBaseUrl + movie.poster_path : null,
-                        rating: movie.rating,
+                        rating: userRating,
                         overview: movie.overview
                     });
 
