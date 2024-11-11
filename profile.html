@@ -84,47 +84,47 @@
         }
 
         // Function to display favorite movies
-function displayFavoriteMovies() {
-    fetchUserData().then(data => {
-        const users = data.record.users; // Access the users array
-        const user = users.find(u => u.username === loggedInUser.username); // Find the logged-in user
+        function displayFavoriteMovies() {
+            fetchUserData().then(data => {
+                const users = data.record.users; // Access the users array
+                const user = users.find(u => u.username === loggedInUser.username); // Find the logged-in user
 
-        if (user && user.movies.length > 0) {
-            const favoriteMoviesDiv = document.getElementById('favoriteMovies');
-            favoriteMoviesDiv.innerHTML = ''; // Clear previous content
+                if (user && user.movies.length > 0) {
+                    const favoriteMoviesDiv = document.getElementById('favoriteMovies');
+                    favoriteMoviesDiv.innerHTML = ''; // Clear previous content
 
-            user.movies.forEach(movie => {
-                // Create a container for each movie
-                const movieContainer = document.createElement('div');
-                movieContainer.classList.add('movie');
+                    user.movies.forEach(movie => {
+                        // Create a container for each movie
+                        const movieContainer = document.createElement('div');
+                        movieContainer.classList.add('movie');
 
-                // Create an image element for the poster
-                const moviePoster = document.createElement('img');
-                moviePoster.src = movie.poster;
-                moviePoster.alt = `${movie.title} poster`;
-                movieContainer.appendChild(moviePoster);
+                        // Create an image element for the poster
+                        const moviePoster = document.createElement('img');
+                        moviePoster.src = movie.poster;
+                        moviePoster.alt = `${movie.title} poster`;
+                        movieContainer.appendChild(moviePoster);
 
-                // Create a title element for the movie title
-                const movieTitle = document.createElement('h3');
-                movieTitle.textContent = movie.title;
-                movieContainer.appendChild(movieTitle);
+                        // Create a title element for the movie title
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = movie.title;
+                        movieContainer.appendChild(movieTitle);
 
-                const starRating = createStarRating(movie.rating);
-                movieContainer.appendChild(starRating);
+                        const starRating = createStarRating(movie.rating);
+                        movieContainer.appendChild(starRating);
 
-                // Create a paragraph element for the movie overview
-                const movieOverview = document.createElement('p');
-                movieOverview.textContent = movie.overview;
-                movieContainer.appendChild(movieOverview);
+                        // Create a paragraph element for the movie overview
+                        const movieOverview = document.createElement('p');
+                        movieOverview.textContent = movie.overview;
+                        movieContainer.appendChild(movieOverview);
 
-                // Append the movie container to the favoriteMovies div
-                favoriteMoviesDiv.appendChild(movieContainer);
+                        // Append the movie container to the favoriteMovies div
+                        favoriteMoviesDiv.appendChild(movieContainer);
+                    });
+                } else {
+                    document.getElementById('favoriteMovies').textContent = 'No favorite movies found.';
+                }
             });
-        } else {
-            document.getElementById('favoriteMovies').textContent = 'No favorite movies found.';
         }
-    });
-}
 
 
     </script>
