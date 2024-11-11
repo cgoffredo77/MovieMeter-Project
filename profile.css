@@ -60,12 +60,12 @@ h1 {
 }
 
 .movie {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    background-color: #1c1c1c;
+    border: 5px solid #002147;
+    border-radius: 50px;
     padding: 10px;
     margin: 5px;
-    width: 80%; /* Set a width for the movie container */
+    width: 80%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
