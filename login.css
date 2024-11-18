@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr25nKVSY8M0miXpeDxrNyMEVxoo2vT2SSDw&s'); /* Replace with your image URL */
+    background-image: url('https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQr25nKVSY8M0miXpeDxrNyMEVxoo2vT2SSDw&s');
     background-size: cover;
     background-position: center;
     display: flex;
@@ -8,11 +8,11 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
-    backdrop-filter: blur(10px); /* Adjust blur level as needed */
+    backdrop-filter: blur(10px);
 }
 
 .login-container {
-    background-color: rgba(255, 255, 255, 0.8); /* Make it slightly transparent */
+    background-color: rgba(255, 255, 255, 0.8);
     padding: 40px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -38,7 +38,7 @@ input[type="password"] {
 }
 
 button {
-    background-color: #0b1f3b; /* Base button color */
+    background-color: #0b1f3b;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -49,14 +49,13 @@ button {
     margin-top: 10px;
     cursor: pointer;
     border-radius: 3px;
-    transition: background-color 0.3s ease; /* Smooth transition */
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: #1c2a4b;
 }
 
-/* Specific styles for "Back to Sign In" button */
 #backToSignIn {
-    background-color: #0b1f3b; /* Ensure it's the same blue */
+    background-color: #0b1f3b;
 }

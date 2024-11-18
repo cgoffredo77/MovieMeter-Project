@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Meter</title>
-    <link rel="stylesheet" href="homePage.css"> <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="homePage.css">
     <style>
         /* Import Google Fonts */
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
 
         body {
             font-family: 'Roboto', sans-serif;
-            background-color: #1c1c1c; /* Darker background */
-            color: #e0e0e0; /* Light grey text for contrast */
+            background-color: #1c1c1c; 
+            color: #e0e0e0; 
             margin: 0;
             padding: 0;
         }
@@ -20,13 +20,13 @@
         h1 {
             text-align: center;
             margin-top: 20px;
-            color: #ffcc00; /* Bright yellow text for contrast */
-            font-family: 'Montserrat', sans-serif; /* Unique font for the heading */
-            font-size: 2.5em; /* Increased font size for prominence */
-            padding: 20px; /* Add padding for better spacing */
-            background-color: #002147; /* Dark navy blue background */
-            border-radius: 10px; /* Rounded corners */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
+            color: #ffcc00;
+            font-family: 'Montserrat', sans-serif; 
+            font-size: 2.5em; 
+            padding: 20px; 
+            background-color: #002147; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); 
         }
 
         .topnav {
@@ -38,17 +38,17 @@
         }
 
         .topnav a {
-            color: #ffcc00; /* Light color for links */
+            color: #ffcc00; 
             padding: 14px 16px;
             text-decoration: none;
             text-align: center;
             transition: background-color 0.3s;
-            font-weight: 500; /* Medium weight for better emphasis */
+            font-weight: 500; 
         }
 
         .topnav a:hover {
             background-color: #575757;
-            color: #fff; /* Change color on hover */
+            color: #fff; 
         }
 
         .modal {
@@ -60,11 +60,11 @@
             width: 100%;
             height: 100%;
             overflow: auto;
-            background-color: rgba(0, 0, 0, 0.7); /* Darker modal background */
+            background-color: rgba(0, 0, 0, 0.7); 
         }
 
         .modal-content {
-            background-color: #222; /* Darker modal content */
+            background-color: #222; 
             margin: 10% auto;
             padding: 20px;
             border: 1px solid #888;
@@ -74,7 +74,7 @@
         }
 
         .close {
-            color: #ffcc00; /* Bright yellow close button */
+            color: #ffcc00; 
             float: right;
             font-size: 28px;
             font-weight: bold;
@@ -82,7 +82,7 @@
 
         .close:hover,
         .close:focus {
-            color: white; /* Change close button color on hover */
+            color: white; 
             text-decoration: none;
             cursor: pointer;
         }
@@ -113,14 +113,14 @@
         }
 
         .favorite-button {
-            background-color: #4CAF50; /* Green background */
+            background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             padding: 10px;
             cursor: pointer;
             margin-top: 10px;
-            font-weight: 500; /* Medium weight for emphasis */
+            font-weight: 500; 
         }
 
         .favorite-button:hover {
@@ -146,7 +146,7 @@
             width: 80%;
             max-width: 800px;
             border-radius: 10px;
-            background-color: #222; /* Darker background for trailer modal */
+            background-color: #222; 
         }
 
         #trailerModal iframe {
@@ -157,9 +157,9 @@
         }
 
         .modal-genre {
-            font-size: 0.9em; /* Smaller font size */
-            color: #ffcc00; /* Bright yellow color for contrast */
-            margin: 5px 0; /* Spacing above and below the genre text */
+            font-size: 0.9em; 
+            color: #ffcc00;
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -190,7 +190,7 @@
             <span class="close">&times;</span>
             <img id="modal-img" class="modal-img" src="" alt="Movie Cover">
             <h2 id="modal-title"></h2>
-            <p id="modal-genre" class="modal-genre"></p> <!-- Genre paragraph -->
+            <p id="modal-genre" class="modal-genre"></p> 
             <p id="modal-overview"></p>
             <button id="addToFavorites" class="favorite-button">Add to Favorites</button>
             <button id="playTrailer" class="favorite-button">Play Trailer</button>
@@ -307,13 +307,13 @@
                     878: 'Science Fiction', 53: 'Thriller', 37: 'Western'
                 };
                 return genreMap[genreId];
-            }).join(', '); // Join multiple genres with a comma
+            }).join(', '); 
         }
 
         function closeTrailerModal() {
             const trailerModal = document.getElementById('trailerModal');
             trailerModal.style.display = 'none';
-            document.getElementById('trailer-video').src = ''; // Stop the video
+            document.getElementById('trailer-video').src = ''; 
         }
 
         function openTrailerModal(movieId) {
@@ -337,19 +337,17 @@
                 return;
             }
 
-            // Fetch current users from JSON Bin
             fetch('https://api.jsonbin.io/v3/b/67056e6aacd3cb34a89381d3', {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m' // Replace with your master key
+                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m'
                 }
             })
             .then(response => response.json())
             .then(data => {
                 const users = data.record.users;
 
-                // Find the user by username
                 const currentUser = users.find(user => user.username === loggedInUser.username);
                 
                 const movieExists = currentUser.movies.some(favMovie => favMovie.id === movie.id);
@@ -359,21 +357,17 @@
                     return;
                 }
 
-                // Prompt user for a custom rating (1-5)
                 let userRating = prompt("Rate this movie from 1 to 5 stars:");
 
-                // Validate that rating is a number between 1 and 5
                 userRating = parseInt(userRating);
                 if (isNaN(userRating) || userRating < 1 || userRating > 5) {
                     alert("Please enter a valid rating between 1 and 5.");
                     return;
                 }
 
-                // Notify the user that the movie was added to favorites
                 alert(`${movie.title} was added to your favorites with a rating of ${userRating} stars!`);
 
                 if (currentUser) {
-                    // Add the movie to the user's movies array
                     currentUser.movies.push({
                         id: movie.id,
                         title: movie.title,
@@ -397,7 +391,7 @@
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m' // Replace with your master key
+                    'X-Master-Key': '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m'
                 },
                 body: JSON.stringify(updatedData)
             })
@@ -422,7 +416,7 @@
             }
         }
 
-        loadHome(); // Load home page on initial load
+        loadHome();
 
         setInterval(syncFavoritesWithJsonBin(movieArray), 5000);
     </script>

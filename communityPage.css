@@ -2,9 +2,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
 
 body {
-    font-family: 'Roboto', sans-serif; /* Using a Google font */
-    background-color: #1c1c1c; /* Darker background */
-    color: #e0e0e0; /* Light grey text for contrast */
+    font-family: 'Roboto', sans-serif; 
+    background-color: #1c1c1c; 
+    color: #e0e0e0; 
     margin: 0;
     padding: 0;
 }
@@ -12,13 +12,13 @@ body {
 h1 {
     text-align: center;
     margin-top: 20px;
-    color: #ffcc00; /* Bright yellow text for contrast */
-    font-family: 'Montserrat', sans-serif; /* Unique font for the heading */
-    font-size: 2.5em; /* Increased font size for prominence */
-    padding: 20px; /* Add padding for better spacing */
-    background-color: #002147; /* Dark navy blue background */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    color: #ffcc00;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    padding: 20px;
+    background-color: #002147;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .topnav {

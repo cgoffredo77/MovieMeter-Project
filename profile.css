@@ -32,20 +32,45 @@ h1 {
     background-color: #575757;
 }
 
-.logout-button {
-    background-color: #f44336; /* Red color for logout */
-    color: white;
-    border: none;
+.button-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+
+.settings-button {
+    background-color: #002147;
+    color: white !important;  /* Ensuring the text is always white */
+    text-decoration: none;
     padding: 10px 20px;
-    text-align: center;
     font-size: 16px;
+    border-radius: 5px;
     cursor: pointer;
-    border-radius: 3px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    border: none;
+}
+
+.settings-button:hover {
+    transform: scale(1.05);
+}
+
+.logout-button {
+    background-color: #c9312c84;
+    color: white; 
+    text-decoration: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    border: none;
 }
 
 .logout-button:hover {
-    background-color: #c62828; /* Darker red on hover */
+    background-color: #c9302c;
 }
 
 #profileContainer {
@@ -68,12 +93,13 @@ h1 {
     width: 80%;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
 
 body {
-    font-family: 'Roboto', sans-serif; /* Using a Google font */
-    background-color: #1c1c1c; /* Darker background */
-    color: #e0e0e0; /* Light grey text for contrast */
+    font-family: 'Roboto', sans-serif;
+    background-color: #1c1c1c;
+    color: #e0e0e0;
     margin: 0;
     padding: 0;
 }
@@ -81,13 +107,13 @@ body {
 h1 {
     text-align: center;
     margin-top: 20px;
-    color: #ffcc00; /* Bright yellow text for contrast */
-    font-family: 'Montserrat', sans-serif; /* Unique font for the heading */
-    font-size: 2.5em; /* Increased font size for prominence */
-    padding: 20px; /* Add padding for better spacing */
-    background-color: #002147; /* Dark navy blue background */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect */
+    color: #ffcc00;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 2.5em;
+    padding: 20px;
+    background-color: #002147;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 .topnav {
@@ -99,17 +125,17 @@ h1 {
 }
 
 .topnav a {
-    color: #ffcc00; /* Light color for links */
+    color: #ffcc00;
     padding: 14px 16px;
     text-decoration: none;
     text-align: center;
     transition: background-color 0.3s;
-    font-weight: 500; /* Medium weight for better emphasis */
+    font-weight: 500;
 }
 
 .topnav a:hover {
     background-color: #575757;
-    color: #fff; /* Change color on hover */
+    color: #fff;
 }
 
 .topnav input[type="text"] {
@@ -118,8 +144,8 @@ h1 {
     font-size: 17px;
     border: none;
     border-radius: 4px;
-    background-color: #444; /* Darker input background */
-    color: #e0e0e0; /* Light input text */
+    background-color: #444;
+    color: #e0e0e0;
 }
 
 .profile-button {
@@ -132,7 +158,7 @@ h1 {
     cursor: pointer;
     border-radius: 3px;
     transition: background-color 0.3s;
-    font-weight: 600; /* Bold for emphasis */
+    font-weight: 600;
 }
 
 .profile-button:hover {
@@ -147,13 +173,13 @@ h1 {
     border: none;
     border-radius: 4px;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.2s; /* Add transform on hover */
-    font-weight: 500; /* Medium weight */
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 500;
 }
 
 .genre-button:hover {
     background-color: #005f73;
-    transform: scale(1.05); /* Slightly enlarge on hover */
+    transform: scale(1.05);
 }
 
 #container {
@@ -166,16 +192,16 @@ h1 {
 #container img {
     margin: 10px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* More pronounced shadow */
-    transition: transform 0.3s; /* Add transition for scaling effect */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    transition: transform 0.3s;
 }
 
 #container img:hover {
-    transform: scale(1.05); /* Enlarge image on hover */
+    transform: scale(1.05);
 }
 
 .delete-button {
-    background-color: #f44336; /* Red color */
+    background-color: #f44336;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -184,17 +210,17 @@ h1 {
     cursor: pointer;
     border-radius: 4px;
     transition: background-color 0.3s, transform 0.2s;
-    font-weight: 600; /* Bold for emphasis */
-    margin-top: 10px; /* Adds space above the button */
+    font-weight: 600;
+    margin-top: 10px;
 }
 
 .delete-button:hover {
-    background-color: #c62828; /* Darker red on hover */
-    transform: scale(1.05); /* Slightly enlarge on hover */
+    background-color: #c62828;
+    transform: scale(1.05);
 }
 
 p {
-    color: black
+    color: black;
 }
 
 h3 {
@@ -205,6 +231,6 @@ h4 {
     font-size: large;
 }
 
-.star-rating{
+.star-rating {
     color: gold;
 }

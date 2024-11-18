@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile - Movie Meter</title>
-    <link rel="stylesheet" href="profile.css"> <!-- Link to the CSS file -->
+    <link rel="stylesheet" href="profile.css"> 
 </head>
 <body>
     <h1>User Profile</h1>
@@ -15,14 +15,18 @@
             <a href="#about">About</a>
             <a href="communityPage.html" class="active">Community</a>
         </div>
-        <button class="logout-button" onclick="logout()">Logout</button>
+        <div class="button-container">
+            <a href="settings.html" class="settings-button">Settings</a>
+            <button class="logout-button" onclick="logout()">Logout</button>
+        </div>
     </div>
+    
 
     <div id="profileContainer">
-        <!-- User profile information will be displayed here -->
-        <h4 id="welcomeMessage"></h4> <!-- Welcome message will be displayed here -->
+        <!-- User profile information -->
+        <h4 id="welcomeMessage"></h4> 
         <h2>Your Favorite Movies</h2>
-        <div id="favoriteMovies"></div> <!-- Display favorite movies here -->
+        <div id="favoriteMovies"></div> 
     </div>
 
     <script>
@@ -103,7 +107,6 @@
                         movieOverview.textContent = movie.overview;
                         movieContainer.appendChild(movieOverview);
 
-                        // Add delete button
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
                         deleteButton.classList.add('delete-button');
