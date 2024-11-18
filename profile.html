@@ -13,6 +13,7 @@
         <div>
             <a href="homePage.html">Home</a>
             <a href="#about">About</a>
+            <a href="communityPage.html" class="active">Community</a>
         </div>
         <button class="logout-button" onclick="logout()">Logout</button>
     </div>
@@ -25,109 +26,126 @@
     </div>
 
     <script>
-
         function createStarRating(rating) {
             const starContainer = document.createElement("div");
             starContainer.classList.add("star-rating");
 
-            // Create 5 stars
             for (let i = 1; i <= 5; i++) {
                 const star = document.createElement("span");
                 star.classList.add("star");
 
-                // Fill star if the current rating is equal or higher
                 if (i <= rating) {
-                    star.textContent = "★"; // Filled star (use Unicode star)
+                    star.textContent = "★";
                     star.classList.add("filled");
                 } else {
-                    star.textContent = "☆"; // Empty star
+                    star.textContent = "☆";
                 }
                 starContainer.appendChild(star);
             }
             return starContainer;
         }
 
-        const BIN_ID = '67056e6aacd3cb34a89381d3'; // Replace with your actual Bin ID
-        const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m'; // Replace with your actual Master Key if required
+        const BIN_ID = '67056e6aacd3cb34a89381d3';
+        const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
 
-        // Function to fetch user data from JSON Bin
         function fetchUserData() {
             return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'X-Master-Key': MASTER_KEY // Include Master Key for authentication
+                    'X-Master-Key': MASTER_KEY
                 }
             })
             .then(response => response.json())
             .catch(error => console.error('Error fetching user data:', error));
         }
 
-        // Get logged-in user from localStorage
-        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser')); // Ensure we're using the right key
+        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
-        // Check if the user is logged in
         if (loggedInUser) {
-            // Display welcome message
-            document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.firstName}!`; // Update to firstName
-
-            // Call function to display favorite movies
-            displayFavoriteMovies(); // Call the function to display favorite movies
+            document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.firstName}!`;
+            displayFavoriteMovies();
         } else {
-            document.getElementById('welcomeMessage').textContent = "Welcome! Please log in."; // Message if not logged in
+            document.getElementById('welcomeMessage').textContent = "Welcome! Please log in.";
         }
 
-        // Function to logout
         function logout() {
-            localStorage.removeItem('signedInUser'); // Remove user info from localStorage
-            window.location.href = 'login.html'; // Redirect to login page
+            localStorage.removeItem('signedInUser');
+            window.location.href = 'login.html';
         }
 
-        // Function to display favorite movies
-function displayFavoriteMovies() {
-    fetchUserData().then(data => {
-        const users = data.record.users; // Access the users array
-        const user = users.find(u => u.username === loggedInUser.username); // Find the logged-in user
+        function displayFavoriteMovies() {
+            fetchUserData().then(data => {
+                const users = data.record.users;
+                const user = users.find(u => u.username === loggedInUser.username);
 
-        if (user && user.movies.length > 0) {
-            const favoriteMoviesDiv = document.getElementById('favoriteMovies');
-            favoriteMoviesDiv.innerHTML = ''; // Clear previous content
+                if (user && user.movies.length > 0) {
+                    const favoriteMoviesDiv = document.getElementById('favoriteMovies');
+                    favoriteMoviesDiv.innerHTML = '';
 
-            user.movies.forEach(movie => {
-                // Create a container for each movie
-                const movieContainer = document.createElement('div');
-                movieContainer.classList.add('movie');
+                    user.movies.forEach((movie, index) => {
+                        const movieContainer = document.createElement('div');
+                        movieContainer.classList.add('movie');
 
-                // Create an image element for the poster
-                const moviePoster = document.createElement('img');
-                moviePoster.src = movie.poster;
-                moviePoster.alt = `${movie.title} poster`;
-                movieContainer.appendChild(moviePoster);
+                        const moviePoster = document.createElement('img');
+                        moviePoster.src = movie.poster;
+                        moviePoster.alt = `${movie.title} poster`;
+                        movieContainer.appendChild(moviePoster);
 
-                // Create a title element for the movie title
-                const movieTitle = document.createElement('h3');
-                movieTitle.textContent = movie.title;
-                movieContainer.appendChild(movieTitle);
+                        const movieTitle = document.createElement('h3');
+                        movieTitle.textContent = movie.title;
+                        movieContainer.appendChild(movieTitle);
 
-                const starRating = createStarRating(movie.rating);
-                movieContainer.appendChild(starRating);
+                        const starRating = createStarRating(movie.rating);
+                        movieContainer.appendChild(starRating);
 
-                // Create a paragraph element for the movie overview
-                const movieOverview = document.createElement('p');
-                movieOverview.textContent = movie.overview;
-                movieContainer.appendChild(movieOverview);
+                        const movieOverview = document.createElement('p');
+                        movieOverview.textContent = movie.overview;
+                        movieContainer.appendChild(movieOverview);
 
-                // Append the movie container to the favoriteMovies div
-                favoriteMoviesDiv.appendChild(movieContainer);
+                        // Add delete button
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.classList.add('delete-button');
+                        deleteButton.onclick = () => deleteMovie(index);
+                        movieContainer.appendChild(deleteButton);
+
+                        favoriteMoviesDiv.appendChild(movieContainer);
+                    });
+                } else {
+                    document.getElementById('favoriteMovies').textContent = 'No favorite movies found.';
+                }
             });
-        } else {
-            document.getElementById('favoriteMovies').textContent = 'No favorite movies found.';
         }
-    });
-}
 
+        function deleteMovie(movieIndex) {
+            fetchUserData().then(data => {
+                const users = data.record.users;
+                const user = users.find(u => u.username === loggedInUser.username);
 
+                if (user) {
+                    user.movies.splice(movieIndex, 1); // Remove the movie at the given index
+
+                    // Update JSONBin with the modified user data
+                    fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': MASTER_KEY
+                        },
+                        body: JSON.stringify({ users: users })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            displayFavoriteMovies(); // Refresh the list after deletion
+                        } else {
+                            console.error('Failed to update JSONBin');
+                        }
+                    })
+                    .catch(error => console.error('Error updating JSONBin:', error));
+                }
+            });
+        }
     </script>
-
 </body>
 </html>
