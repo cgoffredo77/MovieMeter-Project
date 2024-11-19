@@ -45,7 +45,21 @@ h1 {
     align-items: center;
 }
 
+.follow-button {
+    background-color: #125900;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    font-weight: 600;
+}
 
+.follow-button:hover {
+    background-color: #22aa00;
+}
 
 .settings-button {
     background-color: #002147;

@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Follow Users</title>
     <link rel="stylesheet" href="follow.css">
+    <style>
+        /* Basic styling for dropdown */
+        .dropdown-container {
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .dropdown-list {
+            display: none;
+            margin-top: 10px;
+            padding-left: 20px;
+        }
+
+        .dropdown-list p {
+            margin: 5px 0;
+        }
+
+        .arrow {
+            margin-left: 10px;
+            font-size: 20px;
+            transition: transform 0.3s;
+        }
+
+        .arrow.open {
+            transform: rotate(90deg); /* Rotate rightwards arrow to point down */
+        }
+
+        /* Styling for "You are not following anyone" message */
+        #noFollowingMessage {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <h1>Follow Another User</h1>
@@ -21,6 +53,18 @@
         <h2>Enter a Username to Follow:</h2>
         <input type="text" id="usernameInput" placeholder="Username">
         <button onclick="followUser()">Follow</button>
+    </div>
+
+    <div id="followingContainer">
+        <div class="dropdown-container" onclick="toggleDropdown()">
+            <span>Following</span>
+            <span class="arrow">&#9654;</span> <!-- Right arrow (initially collapsed) -->
+        </div>
+        <div class="dropdown-list" id="dropdownList">
+            <div id="noFollowingMessage">
+                <p>You are not following anyone.</p>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -92,9 +136,55 @@
                 updateUserData({ users: data.users }).then(() => {
                     alert(`You are now following ${usernameToFollow}!`);
                     document.getElementById('usernameInput').value = ''; // Clear input field
+                    updateFollowingDropdown(currentUser);  // Update dropdown
                 });
             });
         }
+
+        // Update the following dropdown based on the current user's following list
+        function updateFollowingDropdown(currentUser) {
+            const dropdownList = document.getElementById('dropdownList');
+            const noFollowingMessage = document.getElementById('noFollowingMessage');
+
+            // Clear existing list
+            dropdownList.innerHTML = '';
+
+            if (currentUser.following.length === 0) {
+                noFollowingMessage.style.display = 'block';
+                dropdownList.appendChild(noFollowingMessage);
+            } else {
+                noFollowingMessage.style.display = 'none';
+
+                // Add list items for each user the current user is following
+                currentUser.following.forEach(following => {
+                    const p = document.createElement('p');
+                    p.textContent = following.username;
+                    dropdownList.appendChild(p);
+                });
+            }
+        }
+
+        // Toggle the dropdown visibility and arrow rotation
+        function toggleDropdown() {
+            const dropdownList = document.getElementById('dropdownList');
+            const arrow = document.querySelector('.arrow');
+
+            if (dropdownList.style.display === 'block') {
+                dropdownList.style.display = 'none';
+                arrow.innerHTML = '&#9654;';  // Right arrow when collapsed
+            } else {
+                dropdownList.style.display = 'block';
+                arrow.innerHTML = '&#9660;';  // Down arrow when expanded
+            }
+        }
+
+        // Initialize the page by fetching user data and updating the dropdown
+        fetchUserData().then(data => {
+            const currentUser = data.users.find(user => user.username === "cgoffredo"); // Replace with current user's username
+            if (currentUser) {
+                updateFollowingDropdown(currentUser);
+            }
+        });
     </script>
 </body>
 </html>

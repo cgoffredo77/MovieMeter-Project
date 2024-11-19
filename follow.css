@@ -39,6 +39,7 @@ body {
     padding: 20px;
     background-color: #333;
     border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #followContainer h2 {
@@ -87,6 +88,7 @@ button:hover {
     margin-top: 10px;
 }
 
+/* Heading Styles */
 h1 {
     text-align: center;
     font-size: 36px;
@@ -100,26 +102,58 @@ h2 {
     margin-bottom: 20px;
 }
 
-#followContainer {
-    padding: 20px;
-    background-color: #333;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+/* Dropdown Container */
+#followingContainer {
+    margin-top: 30px;
+    text-align: center; /* Center the dropdown container */
 }
 
-#followingList {
-    text-align: center;
-    margin-top: 20px;
-}
-
-#followingUsersList {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
-}
-
-#followingUsersList li {
-    display: inline-block;
-    margin: 5px;
+/* Dropdown Container for "Following" text and arrow */
+.dropdown-container {
+    display: inline-flex; /* Use inline-flex for centering */
+    align-items: center;
+    cursor: pointer;
     font-size: 18px;
+    color: #f2f2f2;
+    margin-bottom: 10px; /* Add margin for spacing */
+}
+
+.arrow {
+    margin-left: 10px;
+    font-size: 20px;
+    transition: transform 0.3s;
+}
+
+/* Dropdown List */
+.dropdown-list {
+    display: none;
+    margin-top: 10px;
+    padding-left: 0;
+    background-color: #444;
+    border-radius: 4px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    text-align: center; /* Center the list items */
+    width: 100%; /* Make the dropdown list take up the full width of the container */
+    max-width: 400px; /* Ensure it doesn't stretch beyond the container's max-width */
+    margin-left: auto; /* Center the list horizontally */
+    margin-right: auto;
+}
+
+.dropdown-list p {
+    margin: 5px 0;
+    padding: 8px;
+    color: #fff;
+}
+
+
+/* No Following Message */
+#noFollowingMessage {
+    display: none;
+    color: #888;
+    font-size: 16px;
+    padding: 10px;
+    text-align: center;
+    background-color: #333;
+    border-radius: 4px;
+    margin-top: 20px;
 }
