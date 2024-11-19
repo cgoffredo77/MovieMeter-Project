@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Follow Users</title>
+    <link rel="stylesheet" href="follow.css">
+</head>
+<body>
+    <h1>Follow Another User</h1>
+    
+    <div class="topnav">
+        <div>
+            <a href="homePage.html">Home</a>
+            <a href="profile.html">Your Profile</a>
+            <a href="communityPage.html">Community</a>
+        </div>
+    </div>
+
+    <div id="followContainer">
+        <h2>Enter a Username to Follow:</h2>
+        <input type="text" id="usernameInput" placeholder="Username">
+        <button onclick="followUser()">Follow</button>
+    </div>
+
+    <script>
+        const BIN_ID = '67056e6aacd3cb34a89381d3';
+        const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
+
+        // Fetch user data from JSONBin
+        function fetchUserData() {
+            return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                }
+            })
+            .then(response => response.json())
+            .then(data => data.record)  // Ensure you're getting the record object
+            .catch(error => console.error('Error fetching user data:', error));
+        }
+
+        // Update the user data in JSONBin
+        function updateUserData(updatedData) {
+            return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                },
+                body: JSON.stringify(updatedData)
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error updating user data:', error));
+        }
+
+        // Function to follow a user
+        function followUser() {
+            const usernameToFollow = document.getElementById('usernameInput').value.trim();
+
+            if (!usernameToFollow) {
+                alert('Please enter a username to follow.');
+                return;
+            }
+
+            fetchUserData().then(data => {
+                const currentUser = data.users.find(user => user.username === "cgoffredo"); // Replace with current user's username
+
+                if (!currentUser) {
+                    alert('Current user not found.');
+                    return;
+                }
+
+                const userToFollow = data.users.find(user => user.username === usernameToFollow);
+
+                if (!userToFollow) {
+                    alert('User to follow not found.');
+                    return;
+                }
+
+                // Check if already following
+                if (currentUser.following.some(follow => follow.username === usernameToFollow)) {
+                    alert('You are already following this user.');
+                    return;
+                }
+
+                // Add the user to the following list
+                currentUser.following.push({ username: usernameToFollow });
+
+                // Update the user data in JSONBin
+                updateUserData({ users: data.users }).then(() => {
+                    alert(`You are now following ${usernameToFollow}!`);
+                    document.getElementById('usernameInput').value = ''; // Clear input field
+                });
+            });
+        }
+    </script>
+</body>
+</html>

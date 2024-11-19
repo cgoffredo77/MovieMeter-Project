@@ -88,64 +88,64 @@
                 }
 
                 try {
-                // Fetch existing data from JSON Bin
-                const getResponse = await fetch(apiUrl, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': apiKey
+                    // Fetch existing data from JSON Bin
+                    const getResponse = await fetch(apiUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': apiKey
+                        }
+                    });
+
+                    if (!getResponse.ok) {
+                        throw new Error('Failed to fetch data');
                     }
-                });
 
-                if (!getResponse.ok) {
-                    throw new Error('Failed to fetch data');
+                    const data = await getResponse.json();
+
+                    // Ensure `users` array exists; if not, create an empty array
+                    let users = data.record && data.record.users ? data.record.users : [];
+
+                    // Check if the username already exists
+                    const userExists = users.some(user => user.username === newUsername);
+                    if (userExists) {
+                        alert('Username already exists. Please choose a different username.');
+                        return;
+                    }
+
+                    const newUser = {
+                        firstName: firstName,
+                        lastName: lastName,
+                        username: newUsername,
+                        password: newPassword,
+                        movies: [],
+                        following: []
+                    };
+
+                    // Append new user to the `users` array
+                    users.push(newUser);
+
+                    // Update the data in JSON Bin
+                    const updateResponse = await fetch(apiUrl, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': apiKey
+                        },
+                        body: JSON.stringify({ users }) // Ensure this matches the expected structure in JSON Bin
+                    });
+
+                    if (updateResponse.ok) {
+                        alert('Account created successfully!');
+                        resetToLogin();
+                    } else {
+                        console.error('Failed to update JSON Bin:', await updateResponse.text());
+                        alert('Error creating account. Please try again.');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Network error. Please try again.');
                 }
-
-                const data = await getResponse.json();
-
-                // Ensure `users` array exists; if not, create an empty array
-                let users = data.record && data.record.users ? data.record.users : [];
-
-                // Check if the username already exists
-                const userExists = users.some(user => user.username === newUsername);
-                if (userExists) {
-                    alert('Username already exists. Please choose a different username.');
-                    return;
-                }
-
-                // Create new user object
-                const newUser = {
-                    firstName: firstName,
-                    lastName: lastName,
-                    username: newUsername,
-                    password: newPassword,
-                    movies: []
-                };
-
-                // Append new user to the `users` array
-                users.push(newUser);
-
-                // Update the data in JSON Bin
-                const updateResponse = await fetch(apiUrl, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Master-Key': apiKey
-                    },
-                    body: JSON.stringify({ users }) // Ensure this matches the expected structure in JSON Bin
-                });
-
-                if (updateResponse.ok) {
-                    alert('Account created successfully!');
-                    resetToLogin();
-                } else {
-                    console.error('Failed to update JSON Bin:', await updateResponse.text());
-                    alert('Error creating account. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Network error. Please try again.');
-            }
             });
         });
 
@@ -168,37 +168,37 @@
 
         // Handle login functionality
         async function handleLogin(username, password) {
-    try {
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': apiKey
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': apiKey
+                    }
+                });
+
+                const data = await response.json();
+                const users = data.record.users || [];
+
+                const matchedUser = users.find(user => user.username === username && user.password === password);
+
+                if (matchedUser) {
+                    // Store user information in local storage
+                    localStorage.setItem('signedInUser', JSON.stringify({
+                        firstName: matchedUser.firstName,
+                        lastName: matchedUser.lastName,
+                        username: matchedUser.username
+                    }));
+                    alert('Login successful!');
+                    window.location.href = 'homePage.html'; // Redirect to the home page
+                } else {
+                    alert('Invalid username or password.');
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                alert('Error during login. Please try again.');
             }
-        });
-
-        const data = await response.json();
-        const users = data.record.users || [];
-
-        const matchedUser = users.find(user => user.username === username && user.password === password);
-
-        if (matchedUser) {
-            // Store user information in local storage
-            localStorage.setItem('signedInUser', JSON.stringify({
-                firstName: matchedUser.firstName,
-                lastName: matchedUser.lastName,
-                username: matchedUser.username
-            }));
-            alert('Login successful!');
-            window.location.href = 'homePage.html'; // Redirect to the home page
-        } else {
-            alert('Invalid username or password.');
         }
-    } catch (error) {
-        console.error('Error fetching user data:', error);
-        alert('Error during login. Please try again.');
-    }
-}
 
         authForm.addEventListener('submit', function (e) {
             e.preventDefault();
