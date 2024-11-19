@@ -13,14 +13,18 @@
             <div class="form-group">
                 <label for="firstName">First Name:</label>
                 <input type="text" id="firstName" name="firstName" placeholder="Enter your first name">
+                <p class="error-message" id="firstNameError" style="color: red; display: none;">First name is required.</p>
             </div>
             <div class="form-group">
                 <label for="lastName">Last Name:</label>
                 <input type="text" id="lastName" name="lastName" placeholder="Enter your last name">
+                <p class="error-message" id="lastNameError" style="color: red; display: none;">Last name is required.</p>
             </div>
             <div class="form-group">
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" placeholder="Enter your username">
+                <p class="error-message" id="usernameError" style="color: red; display: none;">Username is required.</p>
+                <p class="error-message" id="usernameTakenError" style="color: red; display: none;">This username is already taken. Please choose another one.</p>
             </div>
             <button type="submit" class="save-button">Save Changes</button>
             <button id="backToProfileButton" class="back-button" type="button">Back to Profile</button>
@@ -28,18 +32,15 @@
     </div>
 
     <script>
-        const BIN_ID = '67056e6aacd3cb34a89381d3'; // Replace with your JSONBin ID
+        const BIN_ID = '67056e6aacd3cb34a89381d3';
         const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m'; // Replace with your Master Key
 
-        // Get signed-in user data from localStorage
         const signedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
-        // Pre-fill form fields with current user info
         document.getElementById('firstName').value = signedInUser.firstName || '';
         document.getElementById('lastName').value = signedInUser.lastName || '';
         document.getElementById('username').value = signedInUser.username || '';
 
-        // Fetch all user data from JSONBin
         async function fetchAllUsers() {
             const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 headers: {
@@ -50,16 +51,66 @@
             return data.record.users;
         }
 
-        // Update user info in JSONBin
+        function validateForm(updatedInfo) {
+            let isValid = true;
+
+            document.querySelectorAll('.error-message').forEach(msg => (msg.style.display = 'none'));
+
+            if (!updatedInfo.firstName) {
+                document.getElementById('firstNameError').style.display = 'block';
+                isValid = false;
+            }
+            if (!updatedInfo.lastName) {
+                document.getElementById('lastNameError').style.display = 'block';
+                isValid = false;
+            }
+            if (!updatedInfo.username) {
+                document.getElementById('usernameError').style.display = 'block';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const updatedInfo = {
+                firstName: document.getElementById('firstName').value.trim(),
+                lastName: document.getElementById('lastName').value.trim(),
+                username: document.getElementById('username').value.trim()
+            };
+
+            if (!validateForm(updatedInfo)) {
+                return;
+            }
+
+            try {
+                const allUsers = await fetchAllUsers();
+
+                const usernameExists = allUsers.some(
+                    user => user.username === updatedInfo.username && user.username !== signedInUser.username
+                );
+
+                if (usernameExists) {
+                    document.getElementById('usernameTakenError').style.display = 'block';
+                    return;
+                }
+
+                await updateUserInfo(updatedInfo);
+            } catch (error) {
+                console.error('Error updating user info:', error);
+                alert('There was an error updating your information. Please try again.');
+            }
+        });
+
         async function updateUserInfo(updatedUser) {
             const allUsers = await fetchAllUsers();
 
-            // Find and update the user in the users array
             const updatedUsers = allUsers.map(user =>
                 user.username === signedInUser.username ? { ...user, ...updatedUser } : user
             );
 
-            // Save the updated users array back to JSONBin
             await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'PUT',
                 headers: {
@@ -69,32 +120,11 @@
                 body: JSON.stringify({ users: updatedUsers })
             });
 
-            // Update localStorage to reflect the changes
             const newSessionUser = { ...signedInUser, ...updatedUser };
             localStorage.setItem('signedInUser', JSON.stringify(newSessionUser));
             alert('Your information has been successfully updated!');
         }
 
-        // Handle form submission
-        document.getElementById('settingsForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            // Collect updated fields from the form
-            const updatedInfo = {
-                firstName: document.getElementById('firstName').value,
-                lastName: document.getElementById('lastName').value,
-                username: document.getElementById('username').value
-            };
-
-            try {
-                await updateUserInfo(updatedInfo);
-            } catch (error) {
-                console.error('Error updating user info:', error);
-                alert('There was an error updating your information. Please try again.');
-            }
-        });
-
-        // Redirect to profile page without interfering with the form
         document.getElementById('backToProfileButton').addEventListener('click', () => {
             window.location.href = 'profile.html';
         });
