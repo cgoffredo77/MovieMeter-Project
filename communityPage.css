@@ -43,8 +43,8 @@ h1 {
     color: #fff;
 }
 
-.logout-button {
-    background-color: #f44336;
+.follow-button {
+    background-color: #125900;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -55,8 +55,8 @@ h1 {
     font-weight: 600;
 }
 
-.logout-button:hover {
-    background-color: #c2362a;
+.follow-button:hover {
+    background-color: #22aa00;
 }
 
 #communityContainer {
