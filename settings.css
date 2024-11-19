@@ -1,0 +1,118 @@
+body {
+    margin: 0;
+    font-family: 'Arial', sans-serif;
+    background-color: #1a1a1a;
+    color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.settings-container {
+    background-color: #2a2a2a;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    max-width: 400px;
+    width: 90%;
+}
+
+.settings-container h1 {
+    font-size: 25px;
+    text-align: center;
+    color: #ffffff;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    font-size: 14px;
+    margin-bottom: 5px;
+    display: block;
+    color: #bfbfbf;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #404040;
+    color: #f1f1f1;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #a0a0a0;
+}
+
+input:focus {
+    outline: 2px solid #002147;
+    background-color: #505050;
+}
+
+button.save-button {
+    background-color: #002147;
+    color: #1a1a1a;
+    border: none;
+    padding: 12px 0;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button.save-button:hover {
+    background-color: #0053b1;
+}
+
+button.save-button:active {
+    background-color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .settings-container {
+        padding: 20px;
+    }
+
+    .settings-container h1 {
+        font-size: 20px;
+    }
+
+    button.save-button {
+        font-size: 14px;
+        padding: 10px 0;
+    }
+}
+
+button.back-button {
+    background-color: #002147;
+    color: #1a1a1a;
+    border: none;
+    padding: 12px 0;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px 0px;
+}
+
+button.back-button:hover {
+    background-color: #0053b1;
+    color: #1a1a1a;
+}
+
+button.back-button:active {
+    background-color: #ffffff;
+}
