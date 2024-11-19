@@ -61,7 +61,7 @@ input:focus {
 
 button.save-button {
     background-color: #002147;
-    color: #1a1a1a;
+    color: #ffffff;
     border: none;
     padding: 12px 0;
     border-radius: 5px;
@@ -97,7 +97,7 @@ button.save-button:active {
 
 button.back-button {
     background-color: #002147;
-    color: #1a1a1a;
+    color: #ffffff;
     border: none;
     padding: 12px 0;
     border-radius: 5px;
