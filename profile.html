@@ -18,7 +18,6 @@
         <div class="button-container">
             <button class="follow-button" onclick="window.location.href='follow.html'">+ Follow Others</button>
             <button class="settings-button" onclick="window.location.href='settings.html'">Settings</button>
-
             <button class="logout-button" onclick="logout()">Logout</button>
         </div>
     </div>
@@ -69,7 +68,7 @@
         const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
         if (loggedInUser) {
-            document.getElementById('usernameHeader').textContent = `${loggedInUser.username}`;
+            document.getElementById('usernameHeader').textContent = `${loggedInUser.username}' Profile`;
             document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.firstName}!`;
             displayFavoriteMovies();
         } else {
