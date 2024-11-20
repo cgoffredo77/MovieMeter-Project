@@ -68,7 +68,7 @@
         const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
 
         if (loggedInUser) {
-            document.getElementById('usernameHeader').textContent = `${loggedInUser.username}' Profile`;
+            document.getElementById('usernameHeader').textContent = `${loggedInUser.username}'s Profile`;
             document.getElementById('welcomeMessage').textContent = `Welcome, ${loggedInUser.firstName}!`;
             displayFavoriteMovies();
         } else {
