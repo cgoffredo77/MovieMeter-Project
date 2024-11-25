@@ -121,3 +121,33 @@ h1 {
 #container img:hover {
     transform: scale(1.05);
 }
+
+.star {
+    font-size: 30px;
+    color: #ccc; /* Default star color (empty) */
+    cursor: pointer;
+    position: relative; /* Needed for the pseudo-element positioning */
+    display: inline-block; /* Ensures alignment in a row */
+}
+
+.star.full {
+    color: #ffcc00; /* Highlighted star color (full star) */
+}
+
+.star.half {
+    position: relative;
+    color: #ccc; /* Default empty color */
+}
+
+.star.half::before {
+    content: '\2605'; /* Unicode for a filled star */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #ffcc00; /* Highlight color for the half-star */
+    clip-path: inset(0 50% 0 0); /* Cuts the right half */
+    overflow: hidden; /* Ensures no spillage outside the clipped area */
+    z-index: 1; /* Renders above the default star */
+}
