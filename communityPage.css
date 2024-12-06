@@ -51,12 +51,30 @@ h1 {
     font-size: 16px;
     cursor: pointer;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
     font-weight: 600;
 }
 
 .follow-button:hover {
     background-color: #22aa00;
+    transform: scale(1.05);
+}
+
+.profile-button {
+    background-color: #002147;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-weight: 600;
+    border: none;
+}
+
+.profile-button:hover {
+    background-color: #00428d;
+    transform: scale(1.05);
 }
 
 #communityContainer {

@@ -3,41 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Page</title>
-    <link rel="stylesheet" href="communityPage.css">
+    <title>Community - Movie Meter</title>
+    <link rel="stylesheet" href="communityPage.css"> 
 </head>
 <body>
-    <h1>Community Page</h1>
-    
+    <h1 id="communityHeader"></h1>
+
     <div class="topnav">
         <div>
             <a href="homePage.html">Home</a>
-            <a href="profile.html">Your Profile</a>
+            <a href="profile.html">Profile</a>
+            <a href="#about">About</a>
+            <a href="communityPage.html" class="active">Community</a>
         </div>
-        <button class="follow-button" onclick="window.location.href='follow.html'">+ Follow Others</button>
+        <div class="button-container">
+            <button class="follow-button" onclick="window.location.href='follow.html'">+ Follow Others</button>
+            <button class="profile-button" onclick="window.location.href='profile.html'">Profile</button>
+        </div>
     </div>
 
     <div id="communityContainer">
-        <h2>Everybody's Favorite Movies</h2>
-        <div id="communityList"></div> 
+        <!-- Community users' favorite movies -->
+        <h2>Followed Users' Favorite Movies</h2>
+        <div id="communityMovies"></div> 
     </div>
 
     <script>
-        const BIN_ID = '67056e6aacd3cb34a89381d3';
-        const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
-
-        function fetchUserData() {
-            return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': MASTER_KEY
-                }
-            })
-            .then(response => response.json())
-            .catch(error => console.error('Error fetching user data:', error));
-        }
-
         function createStarRating(rating) {
             const starContainer = document.createElement("div");
             starContainer.classList.add("star-rating");
@@ -57,59 +48,89 @@
             return starContainer;
         }
 
-        function displayCommunityMovies() {
-            fetchUserData().then(data => {
-                const users = data.record.users;
-                const communityListDiv = document.getElementById('communityList');
-                communityListDiv.innerHTML = ''; //reset content
+        const BIN_ID = '67056e6aacd3cb34a89381d3';
+        const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
 
-                users.forEach(user => {
-                    const userContainer = document.createElement('div');
-                    userContainer.classList.add('user');
-
-                    const userTitle = document.createElement('h3');
-                    userTitle.textContent = `${user.username}'s Favorite Movies`;
-                    userContainer.appendChild(userTitle);
-
-                    if (user.movies.length > 0) {
-                        user.movies.forEach((movie, index) => {
-                            const movieContainer = document.createElement('div');
-                            movieContainer.classList.add('movie');
-
-                            const moviePoster = document.createElement('img');
-                            moviePoster.src = movie.poster;
-                            moviePoster.alt = `${movie.title} poster`;
-                            movieContainer.appendChild(moviePoster);
-
-                            const movieTitle = document.createElement('h4');
-                            movieTitle.textContent = movie.title;
-                            movieContainer.appendChild(movieTitle);
-
-                            const starRating = createStarRating(movie.rating);
-                            movieContainer.appendChild(starRating);
-
-                            const movieOverview = document.createElement('p');
-                            movieOverview.textContent = movie.overview;
-                            movieContainer.appendChild(movieOverview);
-
-                            userContainer.appendChild(movieContainer);
-                        });
-                    } else {
-                        const noMoviesMessage = document.createElement('p');
-                        noMoviesMessage.textContent = `${user.firstName} has no favorite movies.`;
-                        userContainer.appendChild(noMoviesMessage);
-                    }
-
-                    communityListDiv.appendChild(userContainer);
-                });
-            });
+        function fetchUserData() {
+            return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': MASTER_KEY
+                }
+            })
+            .then(response => response.json())
+            .catch(error => console.error('Error fetching user data:', error));
         }
 
-        displayCommunityMovies();
+        const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
+
+        if (loggedInUser) {
+            document.getElementById('communityHeader').textContent = `${loggedInUser.username}'s Community`;
+            displayFollowedUsersMovies();
+        } else {
+            document.getElementById('communityHeader').textContent = "Welcome! Please log in.";
+        }
 
         function logout() {
             localStorage.removeItem('signedInUser');
             window.location.href = 'login.html';
+        }
+
+        function displayFollowedUsersMovies() {
+            fetchUserData().then(data => {
+                const users = data.record.users;
+                const loggedInUser = users.find(u => u.username === JSON.parse(localStorage.getItem('signedInUser')).username);
+                
+                if (loggedInUser) {
+                    const followedUsers = loggedInUser.following.map(follow => follow.username);
+
+                    const followedMoviesDiv = document.getElementById('communityMovies');
+                    followedMoviesDiv.innerHTML = ''; // Clear the list before displaying new data
+
+                    followedUsers.forEach(followedUsername => {
+                        const followedUser = users.find(u => u.username === followedUsername);
+
+                        if (followedUser && followedUser.movies.length > 0) {
+                            const userContainer = document.createElement('div');
+                            userContainer.classList.add('user');
+
+                            const userTitle = document.createElement('h3');
+                            userTitle.textContent = `${followedUser.username}'s Favorite Movies`;
+                            userContainer.appendChild(userTitle);
+
+                            followedUser.movies.forEach((movie, index) => {
+                                const movieContainer = document.createElement('div');
+                                movieContainer.classList.add('movie');
+
+                                const moviePoster = document.createElement('img');
+                                moviePoster.src = movie.poster;
+                                moviePoster.alt = `${movie.title} poster`;
+                                movieContainer.appendChild(moviePoster);
+
+                                const movieTitle = document.createElement('h4');
+                                movieTitle.textContent = movie.title;
+                                movieContainer.appendChild(movieTitle);
+
+                                const starRating = createStarRating(movie.rating);
+                                movieContainer.appendChild(starRating);
+
+                                const movieOverview = document.createElement('p');
+                                movieOverview.textContent = movie.overview;
+                                movieContainer.appendChild(movieOverview);
+
+                                userContainer.appendChild(movieContainer);
+                            });
+
+                            followedMoviesDiv.appendChild(userContainer);
+                        } else {
+                            const noMoviesMessage = document.createElement('p');
+                            noMoviesMessage.textContent = `${followedUser.username} has no favorite movies.`;
+                            followedMoviesDiv.appendChild(noMoviesMessage);
+                        }
+                    });
+                }
+            });
         }
     </script>
 </body>
