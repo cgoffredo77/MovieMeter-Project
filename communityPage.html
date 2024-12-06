@@ -22,7 +22,6 @@
     </div>
 
     <div id="communityContainer">
-        <!-- Community users' favorite movies -->
         <h2>Followed Users' Favorite Movies</h2>
         <div id="communityMovies"></div> 
     </div>
@@ -125,6 +124,7 @@
                         } else {
                             const noMoviesMessage = document.createElement('p');
                             noMoviesMessage.textContent = `${followedUser.username} has no favorite movies.`;
+                            noMoviesMessage.classList.add('no-movies');
                             followedMoviesDiv.appendChild(noMoviesMessage);
                         }
                     });
