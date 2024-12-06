@@ -1,4 +1,3 @@
-/* Import Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Montserrat:wght@400;500;600&display=swap');
 
 body {
@@ -124,30 +123,30 @@ h1 {
 
 .star {
     font-size: 30px;
-    color: #ccc; /* Default star color (empty) */
+    color: #ccc; 
     cursor: pointer;
-    position: relative; /* Needed for the pseudo-element positioning */
-    display: inline-block; /* Ensures alignment in a row */
+    position: relative; 
+    display: inline-block;
 }
 
 .star.full {
-    color: #ffcc00; /* Highlighted star color (full star) */
+    color: #ffcc00;
 }
 
 .star.half {
     position: relative;
-    color: #ccc; /* Default empty color */
+    color: #ccc; 
 }
 
 .star.half::before {
-    content: '\2605'; /* Unicode for a filled star */
+    content: '\2605';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    color: #ffcc00; /* Highlight color for the half-star */
-    clip-path: inset(0 50% 0 0); /* Cuts the right half */
-    overflow: hidden; /* Ensures no spillage outside the clipped area */
-    z-index: 1; /* Renders above the default star */
+    color: #ffcc00;
+    clip-path: inset(0 50% 0 0);
+    overflow: hidden;
+    z-index: 1;
 }
