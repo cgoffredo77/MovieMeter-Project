@@ -31,7 +31,6 @@
         const authForm = document.getElementById('authForm');
         const formTitle = document.getElementById('formTitle');
 
-        // Handle signup functionality
         signupButton.addEventListener('click', () => {
             formTitle.textContent = 'Create an Account';
             authForm.innerHTML = `
@@ -63,7 +62,6 @@
 
             document.getElementById('backToSignIn').addEventListener('click', resetToLogin);
 
-            // Check for duplicate usernames during signup
             document.getElementById('createAccountButton').addEventListener('click', async () => {
                 const firstName = document.getElementById('firstName').value.trim();
                 const lastName = document.getElementById('lastName').value.trim();
@@ -88,7 +86,6 @@
                 }
 
                 try {
-                    // Fetch existing data from JSON Bin
                     const getResponse = await fetch(apiUrl, {
                         method: 'GET',
                         headers: {
@@ -103,10 +100,8 @@
 
                     const data = await getResponse.json();
 
-                    // Ensure `users` array exists; if not, create an empty array
                     let users = data.record && data.record.users ? data.record.users : [];
 
-                    // Check if the username already exists
                     const userExists = users.some(user => user.username === newUsername);
                     if (userExists) {
                         alert('Username already exists. Please choose a different username.');
@@ -122,17 +117,15 @@
                         following: []
                     };
 
-                    // Append new user to the `users` array
                     users.push(newUser);
 
-                    // Update the data in JSON Bin
                     const updateResponse = await fetch(apiUrl, {
                         method: 'PUT',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-Master-Key': apiKey
                         },
-                        body: JSON.stringify({ users }) // Ensure this matches the expected structure in JSON Bin
+                        body: JSON.stringify({ users })
                     });
 
                     if (updateResponse.ok) {
@@ -149,7 +142,6 @@
             });
         });
 
-        // Function to reset the form to the login state
         function resetToLogin() {
             formTitle.textContent = 'Login to Movie Meter';
             authForm.innerHTML = `
@@ -166,7 +158,6 @@
             signupButton.style.display = 'block';
         }
 
-        // Handle login functionality
         async function handleLogin(username, password) {
             try {
                 const response = await fetch(apiUrl, {
@@ -183,14 +174,13 @@
                 const matchedUser = users.find(user => user.username === username && user.password === password);
 
                 if (matchedUser) {
-                    // Store user information in local storage
                     localStorage.setItem('signedInUser', JSON.stringify({
                         firstName: matchedUser.firstName,
                         lastName: matchedUser.lastName,
                         username: matchedUser.username
                     }));
                     alert('Login successful!');
-                    window.location.href = 'homePage.html'; // Redirect to the home page
+                    window.location.href = 'homePage.html';
                 } else {
                     alert('Invalid username or password.');
                 }

@@ -6,7 +6,6 @@
     <title>Follow Users</title>
     <link rel="stylesheet" href="follow.css">
     <style>
-        /* Basic styling for dropdown */
         .dropdown-container {
             cursor: pointer;
             font-size: 18px;
@@ -29,10 +28,9 @@
         }
 
         .arrow.open {
-            transform: rotate(90deg); /* Rotate rightwards arrow to point down */
+            transform: rotate(90deg);
         }
 
-        /* Styling for "You are not following anyone" message */
         #noFollowingMessage {
             display: none;
         }
@@ -44,7 +42,7 @@
     <div class="topnav">
         <div>
             <a href="homePage.html">Home</a>
-            <a href="profile.html">Your Profile</a>
+            <a href="profile.html">Profile</a>
             <a href="communityPage.html">Community</a>
         </div>
     </div>
@@ -58,7 +56,7 @@
     <div id="followingContainer">
         <div class="dropdown-container" onclick="toggleDropdown()">
             <span>Following</span>
-            <span class="arrow">&#9654;</span> <!-- Right arrow (initially collapsed) -->
+            <span class="arrow">&#9654;</span> 
         </div>
         <div class="dropdown-list" id="dropdownList">
             <div id="noFollowingMessage">
@@ -71,7 +69,6 @@
         const BIN_ID = '67056e6aacd3cb34a89381d3';
         const MASTER_KEY = '$2a$10$qPie9WKKqWYtoMxhQpLEfeVOf.dI4K750AzEo7MrAWgzb2d0Cpe6m';
 
-        // Fetch user data from JSONBin
         function fetchUserData() {
             return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'GET',
@@ -81,11 +78,10 @@
                 }
             })
             .then(response => response.json())
-            .then(data => data.record)  // Ensure you're getting the record object
+            .then(data => data.record) 
             .catch(error => console.error('Error fetching user data:', error));
         }
 
-        // Update the user data in JSONBin
         function updateUserData(updatedData) {
             return fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'PUT',
@@ -99,7 +95,6 @@
             .catch(error => console.error('Error updating user data:', error));
         }
 
-        // Function to follow a user
         function followUser() {
             const usernameToFollow = document.getElementById('usernameInput').value.trim();
 
@@ -109,7 +104,8 @@
             }
 
             fetchUserData().then(data => {
-                const currentUser = data.users.find(user => user.username === "cgoffredo"); // Replace with current user's username
+                const loggedInUser = JSON.parse(localStorage.getItem('signedInUser'));
+                const currentUser = data.users.find(user => user.username === loggedInUser.username);
 
                 if (!currentUser) {
                     alert('Current user not found.');
@@ -123,30 +119,25 @@
                     return;
                 }
 
-                // Check if already following
                 if (currentUser.following.some(follow => follow.username === usernameToFollow)) {
                     alert('You are already following this user.');
                     return;
                 }
 
-                // Add the user to the following list
                 currentUser.following.push({ username: usernameToFollow });
 
-                // Update the user data in JSONBin
                 updateUserData({ users: data.users }).then(() => {
                     alert(`You are now following ${usernameToFollow}!`);
-                    document.getElementById('usernameInput').value = ''; // Clear input field
-                    updateFollowingDropdown(currentUser);  // Update dropdown
+                    document.getElementById('usernameInput').value = '';
+                    updateFollowingDropdown(currentUser);
                 });
             });
         }
 
-        // Update the following dropdown based on the current user's following list
         function updateFollowingDropdown(currentUser) {
             const dropdownList = document.getElementById('dropdownList');
             const noFollowingMessage = document.getElementById('noFollowingMessage');
 
-            // Clear existing list
             dropdownList.innerHTML = '';
 
             if (currentUser.following.length === 0) {
@@ -155,7 +146,6 @@
             } else {
                 noFollowingMessage.style.display = 'none';
 
-                // Add list items for each user the current user is following
                 currentUser.following.forEach(following => {
                     const p = document.createElement('p');
                     p.textContent = following.username;
@@ -164,23 +154,22 @@
             }
         }
 
-        // Toggle the dropdown visibility and arrow rotation
         function toggleDropdown() {
             const dropdownList = document.getElementById('dropdownList');
             const arrow = document.querySelector('.arrow');
 
             if (dropdownList.style.display === 'block') {
                 dropdownList.style.display = 'none';
-                arrow.innerHTML = '&#9654;';  // Right arrow when collapsed
+                arrow.innerHTML = '&#9654;'; 
             } else {
                 dropdownList.style.display = 'block';
-                arrow.innerHTML = '&#9660;';  // Down arrow when expanded
+                arrow.innerHTML = '&#9660;'; 
             }
         }
 
-        // Initialize the page by fetching user data and updating the dropdown
         fetchUserData().then(data => {
-            const currentUser = data.users.find(user => user.username === "cgoffredo"); // Replace with current user's username
+            const loggedInUser = JSON.parse(localStorage.getItem('signedInUser')); 
+            const currentUser = data.users.find(user => user.username === loggedInUser.username); 
             if (currentUser) {
                 updateFollowingDropdown(currentUser);
             }

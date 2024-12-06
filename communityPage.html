@@ -86,7 +86,7 @@
                     const followedUsers = loggedInUser.following.map(follow => follow.username);
 
                     const followedMoviesDiv = document.getElementById('communityMovies');
-                    followedMoviesDiv.innerHTML = ''; // Clear the list before displaying new data
+                    followedMoviesDiv.innerHTML = '';
 
                     followedUsers.forEach(followedUsername => {
                         const followedUser = users.find(u => u.username === followedUsername);

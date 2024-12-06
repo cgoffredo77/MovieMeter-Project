@@ -129,9 +129,8 @@
                 const user = users.find(u => u.username === loggedInUser.username);
 
                 if (user) {
-                    user.movies.splice(movieIndex, 1); // Remove the movie at the given index
+                    user.movies.splice(movieIndex, 1);
 
-                    // Update JSONBin with the modified user data
                     fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                         method: 'PUT',
                         headers: {
@@ -142,7 +141,7 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            displayFavoriteMovies(); // Refresh the list after deletion
+                            displayFavoriteMovies();
                         } else {
                             console.error('Failed to update JSONBin');
                         }
