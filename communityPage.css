@@ -166,3 +166,30 @@ h1 {
     font-size: 1.5em;
     font-weight: 600;
 }
+
+.accordion {
+    background-color: #333;
+    color: #ffcc00;
+    cursor: pointer;
+    padding: 10px 20px;
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    font-size: 1.2em;
+    transition: background-color 0.3s ease;
+    font-weight: 600;
+}
+
+.accordion:hover {
+    background-color: #444;
+}
+
+.panel {
+    display: none;
+    padding: 15px 20px;
+    background-color: #292929;
+    border-top: 1px solid #444;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+}

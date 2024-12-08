@@ -75,58 +75,73 @@
             window.location.href = 'login.html';
         }
 
+            function toggleDropdown(event) {
+            const panel = event.target.nextElementSibling;
+            if (panel.style.display === "block") {
+                panel.style.display = "none";
+            } else {
+                panel.style.display = "block";
+            }
+        }
+
         function displayFollowedUsersMovies() {
-            fetchUserData().then(data => {
-                const users = data.record.users;
-                const loggedInUser = users.find(u => u.username === JSON.parse(localStorage.getItem('signedInUser')).username);
-                
-                if (loggedInUser) {
-                    const followedUsers = loggedInUser.following.map(follow => follow.username);
+        fetchUserData().then(data => {
+            const users = data.record.users;
+            const loggedInUser = users.find(u => u.username === JSON.parse(localStorage.getItem('signedInUser')).username);
 
-                    const followedMoviesDiv = document.getElementById('communityMovies');
-                    followedMoviesDiv.innerHTML = '';
+            if (loggedInUser) {
+                const followedUsers = loggedInUser.following.map(follow => follow.username);
+                const followedMoviesDiv = document.getElementById('communityMovies');
+                followedMoviesDiv.innerHTML = '';
 
-                    followedUsers.forEach(followedUsername => {
-                        const followedUser = users.find(u => u.username === followedUsername);
+                followedUsers.forEach(followedUsername => {
+                    const followedUser = users.find(u => u.username === followedUsername);
 
-                        if (followedUser && followedUser.movies.length > 0) {
-                            const userContainer = document.createElement('div');
-                            userContainer.classList.add('user');
+                    const userContainer = document.createElement('div');
+                    userContainer.classList.add('user');
 
-                            const userTitle = document.createElement('h3');
-                            userTitle.textContent = `${followedUser.username}'s Favorite Movies`;
-                            userContainer.appendChild(userTitle);
+                    const userTitle = document.createElement('button');
+                    userTitle.textContent = `${followedUser.username}'s Favorite Movies`;
+                    userTitle.classList.add('accordion');
+                    userTitle.addEventListener('click', toggleDropdown);
+                    userContainer.appendChild(userTitle);
 
-                            followedUser.movies.forEach((movie, index) => {
-                                const movieContainer = document.createElement('div');
-                                movieContainer.classList.add('movie');
+                    const moviesPanel = document.createElement('div');
+                    moviesPanel.classList.add('panel');
+                    moviesPanel.style.display = 'none';
 
-                                const moviePoster = document.createElement('img');
-                                moviePoster.src = movie.poster;
-                                moviePoster.alt = `${movie.title} poster`;
-                                movieContainer.appendChild(moviePoster);
+                    if (followedUser && followedUser.movies.length > 0) {
+                        followedUser.movies.forEach(movie => {
+                            const movieContainer = document.createElement('div');
+                            movieContainer.classList.add('movie');
 
-                                const movieTitle = document.createElement('h4');
-                                movieTitle.textContent = movie.title;
-                                movieContainer.appendChild(movieTitle);
+                            const moviePoster = document.createElement('img');
+                            moviePoster.src = movie.poster;
+                            moviePoster.alt = `${movie.title} poster`;
+                            movieContainer.appendChild(moviePoster);
 
-                                const starRating = createStarRating(movie.rating);
-                                movieContainer.appendChild(starRating);
+                            const movieTitle = document.createElement('h4');
+                            movieTitle.textContent = movie.title;
+                            movieContainer.appendChild(movieTitle);
 
-                                const movieOverview = document.createElement('p');
-                                movieOverview.textContent = movie.overview;
-                                movieContainer.appendChild(movieOverview);
+                            const starRating = createStarRating(movie.rating);
+                            movieContainer.appendChild(starRating);
 
-                                userContainer.appendChild(movieContainer);
-                            });
+                            const movieOverview = document.createElement('p');
+                            movieOverview.textContent = movie.overview;
+                            movieContainer.appendChild(movieOverview);
 
-                            followedMoviesDiv.appendChild(userContainer);
-                        } else {
-                            const noMoviesMessage = document.createElement('p');
-                            noMoviesMessage.textContent = `${followedUser.username} has no favorite movies.`;
-                            noMoviesMessage.classList.add('no-movies');
-                            followedMoviesDiv.appendChild(noMoviesMessage);
-                        }
+                            moviesPanel.appendChild(movieContainer);
+                        });
+                    } else {
+                        const noMoviesMessage = document.createElement('p');
+                        noMoviesMessage.textContent = `${followedUser.username} has no favorite movies.`;
+                        noMoviesMessage.classList.add('no-movies');
+                        moviesPanel.appendChild(noMoviesMessage);
+                    }
+
+                    userContainer.appendChild(moviesPanel);
+                    followedMoviesDiv.appendChild(userContainer);
                     });
                 }
             });
