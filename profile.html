@@ -103,10 +103,6 @@
                         const starRating = createStarRating(movie.rating);
                         movieContainer.appendChild(starRating);
 
-                        const movieOverview = document.createElement('p');
-                        movieOverview.textContent = movie.overview;
-                        movieContainer.appendChild(movieOverview);
-
                         const reviewBox = document.createElement('textarea');
                         reviewBox.placeholder = "Write your review here...";
                         reviewBox.classList.add('review-box');
@@ -118,6 +114,11 @@
                         submitReviewButton.classList.add('submit-review-button');
                         submitReviewButton.onclick = () => submitReview(index, reviewBox.value);
                         movieContainer.appendChild(submitReviewButton);
+
+
+                        const movieOverview = document.createElement('p');
+                        movieOverview.textContent = movie.overview;
+                        movieContainer.appendChild(movieOverview);
 
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
