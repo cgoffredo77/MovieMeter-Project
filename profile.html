@@ -107,6 +107,18 @@
                         movieOverview.textContent = movie.overview;
                         movieContainer.appendChild(movieOverview);
 
+                        const reviewBox = document.createElement('textarea');
+                        reviewBox.placeholder = "Write your review here...";
+                        reviewBox.classList.add('review-box');
+                        reviewBox.value = movie.review || ''; // Prefill with existing review if available
+                        movieContainer.appendChild(reviewBox);
+
+                        const submitReviewButton = document.createElement('button');
+                        submitReviewButton.textContent = 'Submit Review';
+                        submitReviewButton.classList.add('submit-review-button');
+                        submitReviewButton.onclick = () => submitReview(index, reviewBox.value);
+                        movieContainer.appendChild(submitReviewButton);
+
                         const deleteButton = document.createElement('button');
                         deleteButton.textContent = 'Delete';
                         deleteButton.classList.add('delete-button');
@@ -117,6 +129,35 @@
                     });
                 } else {
                     document.getElementById('favoriteMovies').textContent = 'No favorite movies found.';
+                }
+            });
+        }
+
+        function submitReview(movieIndex, reviewText) {
+            fetchUserData().then(data => {
+                const users = data.record.users;
+                const user = users.find(u => u.username === loggedInUser.username);
+
+                if (user) {
+                    user.movies[movieIndex].review = reviewText; // Save the review
+
+                    // Update JSONBin with the modified user data
+                    fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-Master-Key': MASTER_KEY
+                        },
+                        body: JSON.stringify({ users: users })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Review saved successfully!');
+                        } else {
+                            console.error('Failed to update JSONBin');
+                        }
+                    })
+                    .catch(error => console.error('Error updating JSONBin:', error));
                 }
             });
         }
